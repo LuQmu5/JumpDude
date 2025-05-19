@@ -18,6 +18,7 @@ public class MainCharacter : MonoBehaviour
     [SerializeField] private float _jumpPower = 5;
     [SerializeField] private float _legsRadius = 1;
     [SerializeField] private float _maxJumpHoldTime = 2f;
+    [SerializeField] private float _doubleJumpTimer = 0.5f;
 
     [Header("Dash Settings")]
     [SerializeField] private float _dashForce = 25f;
@@ -28,6 +29,7 @@ public class MainCharacter : MonoBehaviour
 
     private CharacterMover _mover;
     private GroundChecker _groundChecker;
+    private DoubleJumpHandler _doubleJumpHandler;
     private CharacterJumper _jumper;
     private CharacterDasher _dasher;
 
@@ -43,9 +45,10 @@ public class MainCharacter : MonoBehaviour
         _controller = new PlayerController();
 
         _groundChecker = new GroundChecker(_legsPoint, _legsRadius, _groundMask);
+        _doubleJumpHandler = new DoubleJumpHandler(_groundChecker, maxAirTime: _doubleJumpTimer);
 
         _mover = new CharacterMover(_rigidbody, _movementSpeed, _groundChecker);
-        _jumper = new CharacterJumper(_groundChecker, _rigidbody, _jumpPower, _maxJumpHoldTime);
+        _jumper = new CharacterJumper(_groundChecker, _rigidbody, _jumpPower, _maxJumpHoldTime, _doubleJumpHandler, _movementSpeed);
         _dasher = new CharacterDasher(this, _rigidbody, _dashForce, _dashDuration, _dashCooldown);
 
         _view = new CharacterView(_spriteRenderer, _animator);
@@ -59,7 +62,7 @@ public class MainCharacter : MonoBehaviour
         _controller.Player.Move.canceled += _ => InputDirection = Vector2.zero;
 
         _controller.Player.Jump.started += _ => StartCharge();
-        _controller.Player.Jump.canceled += _ => _jumper.ReleaseJump();
+        _controller.Player.Jump.canceled += _ => ReleaseJump();
 
         _controller.Player.Dash.performed += _ => Dash();
     }
@@ -84,8 +87,15 @@ public class MainCharacter : MonoBehaviour
         _jumper.StartCharge();
     }
 
+    private void ReleaseJump()
+    {
+        _jumper.ReleaseJump();
+    }
+
     private void UpdateJumper()
     {
+        _doubleJumpHandler.Update(Time.deltaTime);
+
         _jumper.UpdateCharge(Time.deltaTime);
         _jumper.UpdateJumpDirection(InputDirection);
     }
