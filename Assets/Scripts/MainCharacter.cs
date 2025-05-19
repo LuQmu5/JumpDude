@@ -15,6 +15,7 @@ public class MainCharacter : MonoBehaviour
     [SerializeField] private LayerMask _groundMask;
     [SerializeField] private float _jumpPower = 5;
     [SerializeField] private float _legsRadius = 1;
+    [SerializeField] private float _maxJumpHoldTime = 2f;
 
     [Header("Dash Settings")]
     [SerializeField] private float _dashForce = 25f;
@@ -37,7 +38,7 @@ public class MainCharacter : MonoBehaviour
         _controller = new PlayerController();
         _mover = new CharacterMover(_rigidbody, _movementSpeed);
         _groundChecker = new GroundChecker(_legsPoint, _legsRadius, _groundMask);
-        _jumper = new CharacterJumper(_groundChecker, _rigidbody, _jumpPower);
+        _jumper = new CharacterJumper(_groundChecker, _rigidbody, _jumpPower, _maxJumpHoldTime);
         _dasher = new CharacterDasher(this, _rigidbody, _dashForce, _dashDuration, _dashCooldown);
         _view = new CharacterView(_spriteRenderer);
     }
@@ -49,7 +50,9 @@ public class MainCharacter : MonoBehaviour
         _controller.Player.Move.performed += ctx => MoveInput = ctx.ReadValue<Vector2>();
         _controller.Player.Move.canceled += _ => MoveInput = Vector2.zero;
 
-        _controller.Player.Jump.performed += _ => Jump();
+        _controller.Player.Jump.started += _ => _jumper.StartCharge();
+        _controller.Player.Jump.canceled += _ => _jumper.ReleaseJump();
+
         _controller.Player.Dash.performed += _ => Dash();
     }
 
@@ -64,11 +67,7 @@ public class MainCharacter : MonoBehaviour
             _mover.SetInputDirection(MoveInput);
 
         _view.FlipByDirection(MoveInput);
-    }
-
-    private void Jump() 
-    {
-        _jumper.TryJump();
+        _jumper.UpdateCharge(Time.deltaTime);
     }
 
     private void Dash()

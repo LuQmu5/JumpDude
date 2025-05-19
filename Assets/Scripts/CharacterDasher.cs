@@ -40,10 +40,8 @@ public class CharacterDasher
         _rigidbody.linearVelocity = Vector2.zero;
 
         _rigidbody.AddForce(direction * _dashForce, ForceMode2D.Impulse);
-        Debug.Log(_rigidbody.linearVelocity);
 
         yield return new WaitForSeconds(_dashDuration);
-        Debug.Log(_rigidbody.linearVelocity);
 
         _rigidbody.linearVelocity = Vector2.zero;
         _rigidbody.gravityScale = originalGravity;
