@@ -38,12 +38,9 @@ public class DoubleJumpHandler
         {
             _canDoubleJump = false;
 
-            Debug.Log("DJ True");
-
             return true;
         }
 
-        Debug.Log("DJ False");
         return false;
     }
 }

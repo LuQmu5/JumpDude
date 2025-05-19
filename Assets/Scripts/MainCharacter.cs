@@ -24,6 +24,7 @@ public class MainCharacter : MonoBehaviour
     [SerializeField] private float _dashForce = 25f;
     [SerializeField] private float _dashDuration = 0.15f;
     [SerializeField] private float _dashCooldown = 0.75f;
+    [SerializeField] private SpriteRenderer[] _shadowRenderers;
 
     private PlayerController _controller;
 
@@ -34,6 +35,7 @@ public class MainCharacter : MonoBehaviour
     private CharacterDasher _dasher;
 
     private CharacterView _view;
+    private DashEffect _dashEffect;
 
     public Vector2 InputDirection { get; private set; }
     public bool CanMove => _dasher.IsDashing == false &&
@@ -52,6 +54,7 @@ public class MainCharacter : MonoBehaviour
         _dasher = new CharacterDasher(this, _rigidbody, _dashForce, _dashDuration, _dashCooldown);
 
         _view = new CharacterView(_spriteRenderer, _animator);
+        _dashEffect = new DashEffect(_shadowRenderers, _spriteRenderer, transform, this);
     }
 
     private void OnEnable()
@@ -115,6 +118,7 @@ public class MainCharacter : MonoBehaviour
         if (_dasher.TryDash(direction))
         {
             _view.SetDashTrigger();
+            _dashEffect.Play(_dashDuration);
         }
     }
 }
