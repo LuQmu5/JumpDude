@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MainCharacter : MonoBehaviour
@@ -32,14 +33,18 @@ public class MainCharacter : MonoBehaviour
 
     private CharacterView _view;
 
-    public Vector2 MoveInput { get; private set; }
+    public Vector2 InputDirection { get; private set; }
+    public bool CanMove => _dasher.IsDashing == false &&
+        _rigidbody.linearVelocityY >= 0 &&
+        _jumper.IsCharging == false;
 
     private void Awake()
     {
         _controller = new PlayerController();
 
-        _mover = new CharacterMover(_rigidbody, _movementSpeed);
         _groundChecker = new GroundChecker(_legsPoint, _legsRadius, _groundMask);
+
+        _mover = new CharacterMover(_rigidbody, _movementSpeed, _groundChecker);
         _jumper = new CharacterJumper(_groundChecker, _rigidbody, _jumpPower, _maxJumpHoldTime);
         _dasher = new CharacterDasher(this, _rigidbody, _dashForce, _dashDuration, _dashCooldown);
 
@@ -50,13 +55,19 @@ public class MainCharacter : MonoBehaviour
     {
         _controller.Enable();
 
-        _controller.Player.Move.performed += ctx => MoveInput = ctx.ReadValue<Vector2>();
-        _controller.Player.Move.canceled += _ => MoveInput = Vector2.zero;
+        _controller.Player.Move.performed += ctx => InputDirection = ctx.ReadValue<Vector2>();
+        _controller.Player.Move.canceled += _ => InputDirection = Vector2.zero;
 
-        _controller.Player.Jump.started += _ => _jumper.StartCharge();
+        _controller.Player.Jump.started += _ => StartCharge();
         _controller.Player.Jump.canceled += _ => _jumper.ReleaseJump();
 
         _controller.Player.Dash.performed += _ => Dash();
+    }
+
+    private void StartCharge()
+    {
+        _mover.Stop();
+        _jumper.StartCharge();
     }
 
     private void OnDisable()
@@ -67,23 +78,28 @@ public class MainCharacter : MonoBehaviour
     private void Update()
     {
         UpdateView();
+        UpdateJumper();
 
-        if (_dasher.IsDashing == false)
-            _mover.SetInputDirection(MoveInput);
+        if (CanMove)
+            _mover.SetMoveDirection(InputDirection);
+    }
 
+    private void UpdateJumper()
+    {
         _jumper.UpdateCharge(Time.deltaTime);
+        _jumper.UpdateJumpDirection(InputDirection);
     }
 
     private void UpdateView()
     {
-        _view.FlipByDirection(MoveInput);
+        _view.UpdateLookDirection(InputDirection);
         _view.UpdateVelocityParams(_rigidbody.linearVelocity);
         _view.UpdateOnGroundParam(_groundChecker.OnGround());
     }
 
     private void Dash()
     {
-        Vector2 direction = MoveInput == Vector2.zero? _view.LookDirection : MoveInput.normalized;
+        Vector2 direction = InputDirection == Vector2.zero? _view.LookDirection : InputDirection.normalized;
 
         if (_dasher.TryDash(direction))
         {

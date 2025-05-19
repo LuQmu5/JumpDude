@@ -7,9 +7,11 @@ public class CharacterJumper
     private readonly float _jumpPower;
     private readonly float _maxHoldTime;
 
-    private bool _isCharging;
     private float _chargeTime;
     private float _minJumpPower = 5;
+    private Vector2 _jumpDirection = Vector2.up;
+
+    public bool IsCharging { get; private set; }
 
     public CharacterJumper(GroundChecker groundChecker, Rigidbody2D rigidbody, float jumpPower, float maxHoldTime)
     {
@@ -24,33 +26,36 @@ public class CharacterJumper
         if (_groundChecker.OnGround() == false) 
             return;
 
-        _isCharging = true;
+        IsCharging = true;
         _chargeTime = 0f;
     }
 
     public void CancelCharge()
     {
-        _isCharging = false;
+        IsCharging = false;
         _chargeTime = 0f;
     }
 
     public void UpdateCharge(float deltaTime)
     {
-        if (_isCharging == false)
+        if (IsCharging == false)
             return;
 
         _chargeTime += deltaTime;
 
-        if (_chargeTime > _maxHoldTime)
+        if (_chargeTime >= _maxHoldTime)
+        {
             _chargeTime = _maxHoldTime;
+            ReleaseJump();
+        }
     }
 
     public void ReleaseJump()
     {
-        if (_groundChecker.OnGround() == false) 
+        if (_groundChecker.OnGround() == false)
             return;
 
-        if (!_isCharging)
+        if (!IsCharging)
             return;
 
         float multiplier = Mathf.Clamp01(_chargeTime / _maxHoldTime);
@@ -60,9 +65,14 @@ public class CharacterJumper
             finalJumpForce = _minJumpPower;
 
         _rigidbody.linearVelocity = new Vector2(_rigidbody.linearVelocity.x, 0);
-        _rigidbody.AddForce(Vector2.up * finalJumpForce, ForceMode2D.Impulse);
+        _rigidbody.AddForce(_jumpDirection * finalJumpForce, ForceMode2D.Impulse);
 
-        _isCharging = false;
+        IsCharging = false;
         _chargeTime = 0f;
+    }
+
+    public void UpdateJumpDirection(Vector2 direction)
+    {
+        _jumpDirection = (Vector2.up + new Vector2(direction.x, 0)).normalized;
     }
 }

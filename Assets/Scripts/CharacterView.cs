@@ -19,7 +19,7 @@ public class CharacterView
         _animator = animator;
     }
 
-    public void FlipByDirection(Vector2 direction)
+    public void UpdateLookDirection(Vector2 direction)
     {
         if (direction.x == 0)
             return;
