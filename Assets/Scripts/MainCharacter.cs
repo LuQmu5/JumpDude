@@ -11,6 +11,8 @@ public class MainCharacter : MonoBehaviour
 
     [Header("Movement Settings")]
     [SerializeField] private float _movementSpeed = 5;
+    [SerializeField] private float _maxSpeedMultiplier = 5;
+    [SerializeField] private float _accelerationTime = 5;
 
     [Header("Jump Settings")]
     [SerializeField] private Transform _legsPoint;
@@ -39,8 +41,7 @@ public class MainCharacter : MonoBehaviour
 
     public Vector2 InputDirection { get; private set; }
     public bool CanMove => _dasher.IsDashing == false &&
-        _rigidbody.linearVelocityY >= 0 &&
-        _jumper.IsCharging == false;
+        _rigidbody.linearVelocityY >= 0;
 
     private void Awake()
     {
@@ -49,7 +50,7 @@ public class MainCharacter : MonoBehaviour
         _groundChecker = new GroundChecker(_legsPoint, _legsRadius, _groundMask);
         _doubleJumpHandler = new DoubleJumpHandler(_groundChecker, maxAirTime: _doubleJumpTimer);
 
-        _mover = new CharacterMover(_rigidbody, _movementSpeed, _groundChecker);
+        _mover = new CharacterMover(_rigidbody, _movementSpeed, _groundChecker, _maxSpeedMultiplier, _accelerationTime);
         _jumper = new CharacterJumper(_groundChecker, _rigidbody, _jumpPower, _maxJumpHoldTime, _doubleJumpHandler, _movementSpeed);
         _dasher = new CharacterDasher(this, _rigidbody, _dashForce, _dashDuration, _dashCooldown);
 

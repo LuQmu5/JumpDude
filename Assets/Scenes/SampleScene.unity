@@ -346,6 +346,8 @@ MonoBehaviour:
   _spriteRenderer: {fileID: 13833265}
   _animator: {fileID: 13833266}
   _movementSpeed: 10
+  _maxSpeedMultiplier: 2
+  _accelerationTime: 1
   _legsPoint: {fileID: 687224244}
   _groundMask:
     serializedVersion: 2

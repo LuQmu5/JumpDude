@@ -78,9 +78,10 @@ public class CharacterJumper
 
         float multiplier = Mathf.Clamp01(_chargeTime / _maxHoldTime);
         float finalJumpForce = Mathf.Max(multiplier * _jumpPower, _minJumpPower);
+        float extraVelocityX = _rigidbody.linearVelocityX / 2;
 
         _rigidbody.linearVelocity = new Vector2(_rigidbody.linearVelocity.x, 0);
-        _rigidbody.AddForce(new Vector3(_jumpDirection.x * finalJumpForce / 2, _jumpDirection.y * finalJumpForce), ForceMode2D.Impulse);
+        _rigidbody.AddForce(new Vector3(_jumpDirection.x * extraVelocityX, _jumpDirection.y * finalJumpForce), ForceMode2D.Impulse);
 
         IsCharging = false;
         _chargeTime = 0f;
