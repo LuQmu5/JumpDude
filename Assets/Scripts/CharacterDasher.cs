@@ -37,16 +37,21 @@ public class CharacterDasher
 
     private IEnumerator DashCoroutine(Vector2 direction)
     {
+        float lastDashMultiplier = 3;
+        float originalGravity = _rigidbody.gravityScale;
+        float timeMultiplierToNormalDash = 0.75f;
+        float timeMultiplierToExtraDash = 1 - timeMultiplierToNormalDash;
+
         _canDash = false;
         _isDashing = true;
-
-        float originalGravity = _rigidbody.gravityScale;
         _rigidbody.gravityScale = 0;
         _rigidbody.linearVelocity = Vector2.zero;
 
         _rigidbody.AddForce(direction * _dashForce, ForceMode2D.Impulse);
+        yield return new WaitForSeconds(_dashDuration * timeMultiplierToNormalDash);
 
-        yield return new WaitForSeconds(_dashDuration);
+        _rigidbody.AddForce(direction * _dashForce * lastDashMultiplier, ForceMode2D.Impulse);
+        yield return new WaitForSeconds(_dashDuration * timeMultiplierToExtraDash);
 
         _rigidbody.linearVelocity = Vector2.zero;
         _rigidbody.gravityScale = originalGravity;

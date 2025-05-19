@@ -12,7 +12,9 @@ public class DashEffect
     private readonly float _shadowInterval;
     private readonly float _shadowLifetime;
 
-    public DashEffect(SpriteRenderer[] shadows, SpriteRenderer characterRenderer, Transform characterTransform, MonoBehaviour mono, float shadowInterval = 0.05f, float shadowLifetime = 0.2f)
+    public DashEffect(SpriteRenderer[] shadows, SpriteRenderer characterRenderer, Transform characterTransform, MonoBehaviour mono, 
+        float shadowInterval = 0.05f, 
+        float shadowLifetime = 0.2f)
     {
         _shadows = shadows;
         _characterRenderer = characterRenderer;
@@ -28,12 +30,12 @@ public class DashEffect
         }
     }
 
-    public void Play(float dashDuration)
+    public void Play(float dashDuration, Vector2 lookDirection)
     {
-        _mono.StartCoroutine(PlayEffect(dashDuration));
+        _mono.StartCoroutine(PlayEffect(dashDuration, lookDirection));
     }
 
-    private IEnumerator PlayEffect(float dashDuration)
+    private IEnumerator PlayEffect(float dashDuration, Vector2 lookDirection)
     {
         int index = 0;
         float timer = 0f;
@@ -41,12 +43,14 @@ public class DashEffect
         while (timer < dashDuration)
         {
             SpriteRenderer shadow = _shadows[index % _shadows.Length];
-            shadow.sprite = _characterRenderer.sprite;
             shadow.transform.position = _characterTransform.position;
             shadow.transform.rotation = _characterTransform.rotation;
             shadow.transform.localScale = _characterTransform.localScale;
             shadow.transform.parent = null;
-            shadow.flipX = _characterRenderer.transform.localScale.x == 1 ? false : true;
+
+            Vector3 scale = shadow.transform.localScale;
+            scale.x = Mathf.Sign(lookDirection.x) * Mathf.Abs(scale.x);
+            shadow.transform.localScale = scale;
 
             shadow.gameObject.SetActive(true);
 

@@ -21,6 +21,7 @@ public class MainCharacter : MonoBehaviour
     [SerializeField] private float _legsRadius = 1;
     [SerializeField] private float _maxJumpHoldTime = 2f;
     [SerializeField] private float _doubleJumpTimer = 0.5f;
+    [SerializeField] private ParticleSystem _doubleJumpVFX;
 
     [Header("Dash Settings")]
     [SerializeField] private float _dashForce = 25f;
@@ -35,9 +36,7 @@ public class MainCharacter : MonoBehaviour
     private DoubleJumpHandler _doubleJumpHandler;
     private CharacterJumper _jumper;
     private CharacterDasher _dasher;
-
     private CharacterView _view;
-    private DashEffect _dashEffect;
 
     public Vector2 InputDirection { get; private set; }
     public bool CanMove => _dasher.IsDashing == false &&
@@ -48,14 +47,13 @@ public class MainCharacter : MonoBehaviour
         _controller = new PlayerController();
 
         _groundChecker = new GroundChecker(_legsPoint, _legsRadius, _groundMask);
-        _doubleJumpHandler = new DoubleJumpHandler(_groundChecker, maxAirTime: _doubleJumpTimer);
+        _doubleJumpHandler = new DoubleJumpHandler(_groundChecker, _doubleJumpTimer);
 
         _mover = new CharacterMover(_rigidbody, _movementSpeed, _groundChecker, _maxSpeedMultiplier, _accelerationTime);
-        _jumper = new CharacterJumper(_groundChecker, _rigidbody, _jumpPower, _maxJumpHoldTime, _doubleJumpHandler, _movementSpeed);
+        _jumper = new CharacterJumper(_groundChecker, _rigidbody, _jumpPower, _maxJumpHoldTime, _doubleJumpHandler);
         _dasher = new CharacterDasher(this, _rigidbody, _dashForce, _dashDuration, _dashCooldown);
 
-        _view = new CharacterView(_spriteRenderer, _animator);
-        _dashEffect = new DashEffect(_shadowRenderers, _spriteRenderer, transform, this);
+        _view = new CharacterView(_spriteRenderer, _animator, _shadowRenderers, this, _doubleJumpVFX);
     }
 
     private void OnEnable()
@@ -67,6 +65,7 @@ public class MainCharacter : MonoBehaviour
 
         _controller.Player.Jump.started += _ => StartCharge();
         _controller.Player.Jump.canceled += _ => ReleaseJump();
+        _controller.Player.DoubleJump.performed += _ => TryDoubleJump();
 
         _controller.Player.Dash.performed += _ => Dash();
     }
@@ -87,14 +86,35 @@ public class MainCharacter : MonoBehaviour
 
     private void StartCharge()
     {
-        _mover.Stop();
-        _jumper.StartCharge();
+        if (_groundChecker.OnGround())
+        {
+            _jumper.TryStartCharge();
+        }
     }
 
     private void ReleaseJump()
     {
-        _jumper.ReleaseJump();
+        if (_jumper.TryReleaseJump() && _doubleJumpHandler.UsedDoubleJump)
+        {
+            _view.PlayDoubleJumpEffect();
+        }
     }
+
+    private bool TryDoubleJump()
+    {
+        if (_groundChecker.OnGround()) 
+            return false;
+
+        if (!_doubleJumpHandler.CanDoubleJump) 
+            return false;
+
+        _jumper.PerformDoubleJump();
+        _doubleJumpHandler.MarkUsed();
+        _view.PlayDoubleJumpEffect();
+
+        return true;
+    }
+
 
     private void UpdateJumper()
     {
@@ -119,7 +139,7 @@ public class MainCharacter : MonoBehaviour
         if (_dasher.TryDash(direction))
         {
             _view.SetDashTrigger();
-            _dashEffect.Play(_dashDuration);
+            _view.PlayDashEffect(_dashDuration);
         }
     }
 }

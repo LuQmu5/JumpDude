@@ -3,10 +3,14 @@
 public class DoubleJumpHandler
 {
     private readonly GroundChecker _groundChecker;
-    private readonly float _maxAirTime;
 
+    private readonly float _maxAirTime;
     private float _airTime;
-    private bool _canDoubleJump = true;
+
+    public bool UsedDoubleJump { get; private set; }
+
+    public bool CanDoubleJump =>
+        _airTime <= _maxAirTime && !UsedDoubleJump;
 
     public DoubleJumpHandler(GroundChecker groundChecker, float maxAirTime)
     {
@@ -19,7 +23,7 @@ public class DoubleJumpHandler
         if (_groundChecker.OnGround())
         {
             _airTime = 0f;
-            _canDoubleJump = true;
+            UsedDoubleJump = false;
         }
         else
         {
@@ -27,20 +31,8 @@ public class DoubleJumpHandler
         }
     }
 
-    public bool CanDoubleJump()
+    public void MarkUsed()
     {
-        return _canDoubleJump && _airTime <= _maxAirTime;
-    }
-
-    public bool TryUseDoubleJump()
-    {
-        if (_canDoubleJump && _airTime <= _maxAirTime)
-        {
-            _canDoubleJump = false;
-
-            return true;
-        }
-
-        return false;
+        UsedDoubleJump = true;
     }
 }

@@ -55,10 +55,4 @@ public class CharacterMover
 
         _rigidbody.linearVelocityX = direction.x * _movementSpeed * _currentSpeedMultiplier * groundAirFactor;
     }
-
-
-    public void Stop()
-    {
-        _rigidbody.linearVelocityX = 0;
-    }
 }

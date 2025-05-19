@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class CharacterView
 {
@@ -11,13 +12,22 @@ public class CharacterView
 
     private readonly SpriteRenderer _spriteRenderer;
     private readonly Animator _animator;
+    private readonly ParticleSystem _doubleJumpVFX;
+
+    private DashEffect _dashEffect;
 
     public Vector2 LookDirection => _spriteRenderer.transform.localScale.x == 1 ? Vector2.right : Vector2.left;
 
-    public CharacterView(SpriteRenderer spriteRenderer, Animator animator)
+    public CharacterView(SpriteRenderer spriteRenderer, 
+        Animator animator, 
+        SpriteRenderer[] dashShadows, 
+        MonoBehaviour monoBehaviour,
+        ParticleSystem doubleJumpVFX)
     {
         _spriteRenderer = spriteRenderer;
         _animator = animator;
+        _doubleJumpVFX = doubleJumpVFX;
+        _dashEffect = new DashEffect(dashShadows, _spriteRenderer, spriteRenderer.transform, monoBehaviour);
     }
 
     public void UpdateLookDirection(Vector2 direction)
@@ -44,10 +54,21 @@ public class CharacterView
     public void SetDashTrigger()
     {
         _animator.SetTrigger(Dash);
+
     }
 
     public void UpdateJumpChargingParam(bool state)
     {
         _animator.SetBool(IsCharging, state);
+    }
+
+    public void PlayDoubleJumpEffect()
+    {
+        _doubleJumpVFX.Play();
+    }
+
+    public void PlayDashEffect(float dashDuration)
+    {
+        _dashEffect.Play(dashDuration, LookDirection);
     }
 }
