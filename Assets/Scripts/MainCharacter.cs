@@ -6,6 +6,7 @@ public class MainCharacter : MonoBehaviour
     [Header("Components")]
     [SerializeField] private Rigidbody2D _rigidbody;
     [SerializeField] private SpriteRenderer _spriteRenderer;
+    [SerializeField] private Animator _animator;
 
     [Header("Movement Settings")]
     [SerializeField] private float _movementSpeed = 5;
@@ -36,11 +37,13 @@ public class MainCharacter : MonoBehaviour
     private void Awake()
     {
         _controller = new PlayerController();
+
         _mover = new CharacterMover(_rigidbody, _movementSpeed);
         _groundChecker = new GroundChecker(_legsPoint, _legsRadius, _groundMask);
         _jumper = new CharacterJumper(_groundChecker, _rigidbody, _jumpPower, _maxJumpHoldTime);
         _dasher = new CharacterDasher(this, _rigidbody, _dashForce, _dashDuration, _dashCooldown);
-        _view = new CharacterView(_spriteRenderer);
+
+        _view = new CharacterView(_spriteRenderer, _animator);
     }
 
     private void OnEnable()
@@ -63,16 +66,28 @@ public class MainCharacter : MonoBehaviour
 
     private void Update()
     {
+        UpdateView();
+
         if (_dasher.IsDashing == false)
             _mover.SetInputDirection(MoveInput);
 
-        _view.FlipByDirection(MoveInput);
         _jumper.UpdateCharge(Time.deltaTime);
+    }
+
+    private void UpdateView()
+    {
+        _view.FlipByDirection(MoveInput);
+        _view.UpdateVelocityParams(_rigidbody.linearVelocity);
+        _view.UpdateOnGroundParam(_groundChecker.OnGround());
     }
 
     private void Dash()
     {
         Vector2 direction = MoveInput == Vector2.zero? _view.LookDirection : MoveInput.normalized;
-        _dasher.TryDash(direction);
+
+        if (_dasher.TryDash(direction))
+        {
+            _view.SetDashTrigger();
+        }
     }
 }

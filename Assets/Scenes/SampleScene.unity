@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 13833264}
   - component: {fileID: 13833265}
+  - component: {fileID: 13833266}
   m_Layer: 0
   m_Name: View
   m_TagString: Untagged
@@ -194,7 +195,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 3153539378023671787, guid: 487dda49b8913934c8b9f6cef047e9e5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -206,6 +207,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &13833266
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 13833263}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e874ee2cbeb0fa74088e2529adb98a15, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &17661576
 GameObject:
   m_ObjectHideFlags: 0
@@ -320,17 +343,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rigidbody: {fileID: 17661580}
   _spriteRenderer: {fileID: 13833265}
-  _movementSpeed: 5
+  _animator: {fileID: 13833266}
+  _movementSpeed: 10
   _legsPoint: {fileID: 687224244}
   _groundMask:
     serializedVersion: 2
     m_Bits: 64
-  _jumpPower: 25
+  _jumpPower: 15
   _legsRadius: 1
   _maxJumpHoldTime: 0.5
   _dashForce: 25
-  _dashDuration: 0.15
-  _dashCooldown: 0.75
+  _dashDuration: 0.2
+  _dashCooldown: 0.5
 --- !u!1 &161092335
 GameObject:
   m_ObjectHideFlags: 0
