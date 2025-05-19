@@ -64,12 +64,6 @@ public class MainCharacter : MonoBehaviour
         _controller.Player.Dash.performed += _ => Dash();
     }
 
-    private void StartCharge()
-    {
-        _mover.Stop();
-        _jumper.StartCharge();
-    }
-
     private void OnDisable()
     {
         _controller.Disable();
@@ -84,6 +78,12 @@ public class MainCharacter : MonoBehaviour
             _mover.SetMoveDirection(InputDirection);
     }
 
+    private void StartCharge()
+    {
+        _mover.Stop();
+        _jumper.StartCharge();
+    }
+
     private void UpdateJumper()
     {
         _jumper.UpdateCharge(Time.deltaTime);
@@ -95,6 +95,7 @@ public class MainCharacter : MonoBehaviour
         _view.UpdateLookDirection(InputDirection);
         _view.UpdateVelocityParams(_rigidbody.linearVelocity);
         _view.UpdateOnGroundParam(_groundChecker.OnGround());
+        _view.UpdateJumpChargingParam(_jumper.IsCharging);
     }
 
     private void Dash()

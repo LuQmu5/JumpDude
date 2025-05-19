@@ -55,7 +55,7 @@ public class CharacterJumper
         if (_groundChecker.OnGround() == false)
             return;
 
-        if (!IsCharging)
+        if (IsCharging == false)
             return;
 
         float multiplier = Mathf.Clamp01(_chargeTime / _maxHoldTime);
