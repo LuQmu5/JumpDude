@@ -22,12 +22,17 @@ public class CharacterDasher
         _cooldown = cooldown;
     }
 
-    public void TryDash(Vector2 direction)
+    public bool TryDash(Vector2 direction)
     {
-        if (!_canDash) 
-            return;
+        if (_canDash == false) 
+            return false;
+
+        if (_rigidbody.linearVelocityY < 0)
+            return false;
 
         _monoBehaviour.StartCoroutine(DashCoroutine(direction.normalized));
+
+        return true;
     }
 
     private IEnumerator DashCoroutine(Vector2 direction)

@@ -72,7 +72,7 @@ public class MainCharacter : MonoBehaviour
 
     private void Dash()
     {
-        Vector2 direction = MoveInput != Vector2.zero ? MoveInput.normalized : Vector2.right;
+        Vector2 direction = MoveInput == Vector2.zero? _view.LookDirection : MoveInput.normalized;
         _dasher.TryDash(direction);
     }
 }
