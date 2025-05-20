@@ -15,7 +15,7 @@ MonoBehaviour:
   jumpPower: 16
   maxJumpHoldTime: 0.5
   doubleJumpTimer: 1
-  legsRadius: 0.25
+  legsRadius: 1
   groundMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 320

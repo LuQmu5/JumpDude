@@ -87,14 +87,7 @@ public class MainCharacter : MonoBehaviour
         UpdateView();
 
         if (CanMove)
-        {
-            float speedMultiplier = _glider.GetHorizontalSpeedMultiplier();
-            _mover.SetMoveDirection(InputDirection * speedMultiplier);
-        }
-        else
-        {
-            _mover.SetMoveDirection(Vector2.zero);
-        }
+            _mover.SetMoveDirection(InputDirection );
     }
 
 

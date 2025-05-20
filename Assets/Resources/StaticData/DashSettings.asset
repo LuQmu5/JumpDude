@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67ffaa7a122fa0b419d513c8afff3c70, type: 3}
   m_Name: DashSettings
   m_EditorClassIdentifier: 
-  minDashForce: 25
-  maxDashForce: 50
+  minDashForce: 12
+  maxDashForce: 25
   dashDuration: 0.2
   dashCooldown: 0.5
   dashChargeTime: 0.4
