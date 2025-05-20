@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a031f6a69e498d146ac9567906b3e5e9, type: 3}
   m_Name: JumpSettings
   m_EditorClassIdentifier: 
-  jumpPower: 14
-  maxJumpHoldTime: 0.6
-  doubleJumpTimer: 0.6
+  jumpPower: 16
+  maxJumpHoldTime: 0.5
+  doubleJumpTimer: 1
   legsRadius: 0.25
   groundMask:
     serializedVersion: 2

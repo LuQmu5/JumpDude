@@ -318,7 +318,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0
-  m_GravityScale: 2
+  m_GravityScale: 1.75
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -360,8 +360,8 @@ MonoBehaviour:
   - {fileID: 603624773}
   _dashTrailVFX: {fileID: 2045823752}
   _characterSettings: {fileID: 11400000, guid: 6139a87f49d582648804ac77b33064c4, type: 2}
-  _glideGravityScale: 0.5
-  _glideSpeedMultiplier: 0.5
+  _glideGravityScale: 0.3
+  _glideSpeedMultiplier: 0.4
 --- !u!1 &61577613
 GameObject:
   m_ObjectHideFlags: 0
