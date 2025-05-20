@@ -345,23 +345,8 @@ MonoBehaviour:
   _rigidbody: {fileID: 17661580}
   _spriteRenderer: {fileID: 13833265}
   _animator: {fileID: 13833266}
-  _movementSpeed: 8
-  _maxSpeedMultiplier: 1.5
-  _accelerationTime: 0.75
   _legsPoint: {fileID: 687224244}
-  _groundMask:
-    serializedVersion: 2
-    m_Bits: 64
-  _jumpPower: 14
-  _legsRadius: 0.25
-  _maxJumpHoldTime: 0.5
-  _doubleJumpTimer: 0.6
   _doubleJumpVFX: {fileID: 61577616}
-  _minDashForce: 10
-  _maxDashForce: 25
-  _dashDuration: 0.2
-  _dashCooldown: 0.5
-  _dashChargeTime: 0.4
   _shadowRenderers:
   - {fileID: 1737297904}
   - {fileID: 1168238240}
@@ -374,10 +359,7 @@ MonoBehaviour:
   - {fileID: 551129680}
   - {fileID: 603624773}
   _dashTrailVFX: {fileID: 2045823752}
-  _enemyLayer:
-    serializedVersion: 2
-    m_Bits: 256
-  _dashHitRadius: 1
+  _characterSettings: {fileID: 11400000, guid: 6139a87f49d582648804ac77b33064c4, type: 2}
 --- !u!1 &61577613
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,33 +8,16 @@ public class MainCharacter : MonoBehaviour
     [SerializeField] private SpriteRenderer _spriteRenderer;
     [SerializeField] private Animator _animator;
 
-    [Header("Movement Settings")]
-    [SerializeField] private float _movementSpeed = 5;
-    [SerializeField] private float _maxSpeedMultiplier = 5;
-    [SerializeField] private float _accelerationTime = 5;
-
-    [Header("Jump Settings")]
+    [Header("VFX & Points")]
     [SerializeField] private Transform _legsPoint;
-    [SerializeField] private LayerMask _groundMask;
-    [SerializeField] private float _jumpPower = 5;
-    [SerializeField] private float _legsRadius = 1;
-    [SerializeField] private float _maxJumpHoldTime = 2f;
-    [SerializeField] private float _doubleJumpTimer = 0.5f;
     [SerializeField] private ParticleSystem _doubleJumpVFX;
-
-    [Header("Dash Settings")]
-    [SerializeField] private float _minDashForce = 10f;
-    [SerializeField] private float _maxDashForce = 25f;
-    [SerializeField] private float _dashDuration = 0.15f;
-    [SerializeField] private float _dashCooldown = 0.75f;
-    [SerializeField] private float _dashChargeTime = 1f;
     [SerializeField] private SpriteRenderer[] _shadowRenderers;
     [SerializeField] private TrailRenderer _dashTrailVFX;
-    [SerializeField] private LayerMask _enemyLayer;
-    [SerializeField] private float _dashHitRadius = 0.5f;
+
+    [Header("Settings")]
+    [SerializeField] private CharacterSettings _characterSettings;
 
     private PlayerController _controller;
-
     private CharacterMover _mover;
     private GroundChecker _groundChecker;
     private DoubleJumpHandler _doubleJumpHandler;
@@ -49,15 +32,19 @@ public class MainCharacter : MonoBehaviour
     {
         _controller = new PlayerController();
 
-        DashHitDetector hitDetector = new DashHitDetector(transform, _dashHitRadius, _enemyLayer);
+        var jump = _characterSettings.jumpSettings;
+        var dash = _characterSettings.dashSettings;
+        var move = _characterSettings.movementSettings;
+
+        DashHitDetector hitDetector = new DashHitDetector(transform, dash.dashHitRadius, dash.enemyLayer);
         _view = new CharacterView(_spriteRenderer, _animator, _shadowRenderers, this, _doubleJumpVFX, _dashTrailVFX, hitDetector);
 
-        _groundChecker = new GroundChecker(_legsPoint, _legsRadius, _groundMask);
-        _doubleJumpHandler = new DoubleJumpHandler(_groundChecker, _doubleJumpTimer);
+        _groundChecker = new GroundChecker(_legsPoint, jump.legsRadius, jump.groundMask);
+        _doubleJumpHandler = new DoubleJumpHandler(_groundChecker, jump.doubleJumpTimer);
 
-        _mover = new CharacterMover(_rigidbody, _movementSpeed, _groundChecker, _maxSpeedMultiplier, _accelerationTime);
-        _jumper = new CharacterJumper(_groundChecker, _rigidbody, _jumpPower, _maxJumpHoldTime, _doubleJumpHandler);
-        _dasher = new CharacterDasher(this, _rigidbody, _minDashForce, _maxDashForce, _dashDuration, _dashCooldown, _dashChargeTime, _view.PlayDashEffect);
+        _mover = new CharacterMover(_rigidbody, move.movementSpeed, _groundChecker, move.maxSpeedMultiplier, move.accelerationTime);
+        _jumper = new CharacterJumper(_groundChecker, _rigidbody, jump.jumpPower, jump.maxJumpHoldTime, _doubleJumpHandler);
+        _dasher = new CharacterDasher(this, _rigidbody, dash.minDashForce, dash.maxDashForce, dash.dashDuration, dash.dashCooldown, dash.dashChargeTime, _view.PlayDashEffect);
     }
 
     private void OnEnable()
@@ -84,10 +71,8 @@ public class MainCharacter : MonoBehaviour
     private void Update()
     {
         _doubleJumpHandler.Update(Time.deltaTime);
-
         _jumper.UpdateCharge(Time.deltaTime);
         _jumper.UpdateJumpDirection(InputDirection);
-
         _dasher.UpdateDashCharge(Time.deltaTime);
 
         UpdateView();
@@ -96,17 +81,12 @@ public class MainCharacter : MonoBehaviour
             _mover.SetMoveDirection(InputDirection);
     }
 
-    private void TryStartJumpCharge()
-    {
-        _jumper.TryStartCharge();
-    }
+    private void TryStartJumpCharge() => _jumper.TryStartCharge();
 
     private void TryReleaseJump()
     {
         if (_jumper.TryReleaseJump() && _doubleJumpHandler.UsedDoubleJump)
-        {
             _view.PlayDoubleJumpEffect();
-        }
     }
 
     private bool TryDoubleJump()
@@ -133,7 +113,7 @@ public class MainCharacter : MonoBehaviour
         {
             _dasher.ReleaseDash();
             _view.SetDashTrigger();
-            _view.PlayDashEffect(_dashDuration);
+            _view.PlayDashEffect(_characterSettings.dashSettings.dashDuration);
         }
     }
 

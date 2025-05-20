@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0088ad4971c993e498d0f3d039d8cf10, type: 3}
+  m_Name: CharacterSettings
+  m_EditorClassIdentifier: 
+  movementSettings: {fileID: 11400000, guid: f4d749373527c924f9b12c98625dd986, type: 2}
+  jumpSettings: {fileID: 11400000, guid: 0d0446fb731e77d46b2d176ecbc6f274, type: 2}
+  dashSettings: {fileID: 11400000, guid: f8a02b96e66b3134fab6bb2138ba0cb5, type: 2}
