@@ -40,7 +40,10 @@ public class DashEffect
         int index = 0;
         float timer = 0f;
 
-        while (timer < dashDuration)
+        int minIterations = _shadows.Length;
+        float requiredDuration = Mathf.Max(dashDuration, _shadowInterval * minIterations);
+
+        while (timer < requiredDuration)
         {
             SpriteRenderer shadow = _shadows[index % _shadows.Length];
             shadow.transform.position = _characterTransform.position;
@@ -62,6 +65,7 @@ public class DashEffect
             yield return new WaitForSeconds(_shadowInterval);
         }
     }
+
 
     private IEnumerator DisableShadow(SpriteRenderer shadow, float delay)
     {

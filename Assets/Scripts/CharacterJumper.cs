@@ -5,18 +5,15 @@ public class CharacterJumper
     private readonly Rigidbody2D _rigidbody;
     private readonly GroundChecker _groundChecker;
     private readonly DoubleJumpHandler _doubleJumpHandler;
+    private readonly ChargeHandler _jumpCharge;
 
-    private readonly float _jumpPower;
-    private readonly float _maxHoldTime;
     private readonly float _minJumpPower = 10;
 
     private Vector2 _lastJumpDirection = Vector2.up;
     private float _lastJumpForce = 0f;
-
-    private float _chargeTime;
     private Vector2 _jumpDirection = Vector2.up;
 
-    public bool IsCharging { get; private set; }
+    public bool IsCharging => _jumpCharge.IsCharging;
 
     public CharacterJumper(
         GroundChecker groundChecker,
@@ -27,9 +24,8 @@ public class CharacterJumper
     {
         _groundChecker = groundChecker;
         _rigidbody = rigidbody;
-        _jumpPower = jumpPower;
-        _maxHoldTime = maxHoldTime;
         _doubleJumpHandler = doubleJumpHandler;
+        _jumpCharge = new ChargeHandler(maxHoldTime, _minJumpPower, jumpPower);
     }
 
     public bool TryStartCharge()
@@ -37,35 +33,28 @@ public class CharacterJumper
         if (_groundChecker.OnGround() == false && _doubleJumpHandler.CanDoubleJump == false)
             return false;
 
-        IsCharging = true;
-        _chargeTime = 0f;
+        _jumpCharge.StartCharge();
 
         return true;
     }
 
     public void UpdateCharge(float deltaTime)
     {
-        if (IsCharging == false)
+        if (!_jumpCharge.IsCharging) 
             return;
 
-        _chargeTime += deltaTime;
+        _jumpCharge.Update(deltaTime);
 
-        if (_chargeTime >= _maxHoldTime)
-        {
-            _chargeTime = _maxHoldTime;
+        if (!_jumpCharge.IsCharging)
             TryReleaseJump();
-        }
     }
 
     public bool TryReleaseJump()
     {
-        bool isGrounded = _groundChecker.OnGround();
-
-        if (!isGrounded)
+        if (!_groundChecker.OnGround())
             return false;
 
-        float multiplier = Mathf.Clamp01(_chargeTime / _maxHoldTime);
-        float finalJumpForceY = Mathf.Max(multiplier * _jumpPower, _minJumpPower);
+        float finalJumpForceY = _jumpCharge.GetFinalValue();
         float extraVelocityX = _rigidbody.linearVelocityX;
 
         _rigidbody.linearVelocity = new Vector2(_rigidbody.linearVelocity.x, 0);
@@ -75,9 +64,7 @@ public class CharacterJumper
         _lastJumpDirection = _jumpDirection;
         _lastJumpForce = finalJumpForceY;
 
-        IsCharging = false;
-        _chargeTime = 0f;
-
+        _jumpCharge.Reset();
         return true;
     }
 
@@ -89,7 +76,6 @@ public class CharacterJumper
         _rigidbody.linearVelocity = new Vector2(_rigidbody.linearVelocity.x, 0);
         _rigidbody.AddForce(force, ForceMode2D.Impulse);
     }
-
 
     public void UpdateJumpDirection(Vector2 direction)
     {

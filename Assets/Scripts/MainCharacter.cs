@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MainCharacter : MonoBehaviour
@@ -24,9 +23,11 @@ public class MainCharacter : MonoBehaviour
     [SerializeField] private ParticleSystem _doubleJumpVFX;
 
     [Header("Dash Settings")]
-    [SerializeField] private float _dashForce = 25f;
+    [SerializeField] private float _minDashForce = 10f;
+    [SerializeField] private float _maxDashForce = 25f;
     [SerializeField] private float _dashDuration = 0.15f;
     [SerializeField] private float _dashCooldown = 0.75f;
+    [SerializeField] private float _dashChargeTime = 1f;
     [SerializeField] private SpriteRenderer[] _shadowRenderers;
 
     private PlayerController _controller;
@@ -39,21 +40,20 @@ public class MainCharacter : MonoBehaviour
     private CharacterView _view;
 
     public Vector2 InputDirection { get; private set; }
-    public bool CanMove => _dasher.IsDashing == false &&
-        _rigidbody.linearVelocityY >= 0;
+    public bool CanMove => !_dasher.IsDashing && _rigidbody.linearVelocityY >= 0;
 
     private void Awake()
     {
         _controller = new PlayerController();
+
+        _view = new CharacterView(_spriteRenderer, _animator, _shadowRenderers, this, _doubleJumpVFX);
 
         _groundChecker = new GroundChecker(_legsPoint, _legsRadius, _groundMask);
         _doubleJumpHandler = new DoubleJumpHandler(_groundChecker, _doubleJumpTimer);
 
         _mover = new CharacterMover(_rigidbody, _movementSpeed, _groundChecker, _maxSpeedMultiplier, _accelerationTime);
         _jumper = new CharacterJumper(_groundChecker, _rigidbody, _jumpPower, _maxJumpHoldTime, _doubleJumpHandler);
-        _dasher = new CharacterDasher(this, _rigidbody, _dashForce, _dashDuration, _dashCooldown);
-
-        _view = new CharacterView(_spriteRenderer, _animator, _shadowRenderers, this, _doubleJumpVFX);
+        _dasher = new CharacterDasher(this, _rigidbody, _minDashForce, _maxDashForce, _dashDuration, _dashCooldown, _dashChargeTime, _view.PlayDashEffect);
     }
 
     private void OnEnable()
@@ -63,11 +63,13 @@ public class MainCharacter : MonoBehaviour
         _controller.Player.Move.performed += ctx => InputDirection = ctx.ReadValue<Vector2>();
         _controller.Player.Move.canceled += _ => InputDirection = Vector2.zero;
 
-        _controller.Player.Jump.started += _ => StartCharge();
-        _controller.Player.Jump.canceled += _ => ReleaseJump();
+        _controller.Player.Jump.started += _ => TryStartJumpCharge();
+        _controller.Player.Jump.canceled += _ => TryReleaseJump();
+
         _controller.Player.DoubleJump.performed += _ => TryDoubleJump();
 
-        _controller.Player.Dash.performed += _ => Dash();
+        _controller.Player.Dash.started += _ => TryStartDashCharge();
+        _controller.Player.Dash.canceled += _ => TryReleaseDash();
     }
 
     private void OnDisable()
@@ -77,22 +79,25 @@ public class MainCharacter : MonoBehaviour
 
     private void Update()
     {
+        _doubleJumpHandler.Update(Time.deltaTime);
+
+        _jumper.UpdateCharge(Time.deltaTime);
+        _jumper.UpdateJumpDirection(InputDirection);
+
+        _dasher.UpdateDashCharge(Time.deltaTime);
+
         UpdateView();
-        UpdateJumper();
 
         if (CanMove)
             _mover.SetMoveDirection(InputDirection);
     }
 
-    private void StartCharge()
+    private void TryStartJumpCharge()
     {
-        if (_groundChecker.OnGround())
-        {
-            _jumper.TryStartCharge();
-        }
+        _jumper.TryStartCharge();
     }
 
-    private void ReleaseJump()
+    private void TryReleaseJump()
     {
         if (_jumper.TryReleaseJump() && _doubleJumpHandler.UsedDoubleJump)
         {
@@ -102,26 +107,30 @@ public class MainCharacter : MonoBehaviour
 
     private bool TryDoubleJump()
     {
-        if (_groundChecker.OnGround()) 
-            return false;
-
-        if (!_doubleJumpHandler.CanDoubleJump) 
-            return false;
-
-        _jumper.PerformDoubleJump();
-        _doubleJumpHandler.MarkUsed();
-        _view.PlayDoubleJumpEffect();
-
-        return true;
+        if (!_groundChecker.OnGround() && _doubleJumpHandler.CanDoubleJump)
+        {
+            _jumper.PerformDoubleJump();
+            _doubleJumpHandler.MarkUsed();
+            _view.PlayDoubleJumpEffect();
+            return true;
+        }
+        return false;
     }
 
-
-    private void UpdateJumper()
+    private void TryStartDashCharge()
     {
-        _doubleJumpHandler.Update(Time.deltaTime);
+        Vector2 direction = InputDirection == Vector2.zero ? _view.LookDirection : InputDirection.normalized;
+        _dasher.StartDashCharge(direction);
+    }
 
-        _jumper.UpdateCharge(Time.deltaTime);
-        _jumper.UpdateJumpDirection(InputDirection);
+    private void TryReleaseDash()
+    {
+        if (_dasher.IsCharging)
+        {
+            _dasher.ReleaseDash();
+            _view.SetDashTrigger();
+            _view.PlayDashEffect(_dashDuration);
+        }
     }
 
     private void UpdateView()
@@ -130,16 +139,5 @@ public class MainCharacter : MonoBehaviour
         _view.UpdateVelocityParams(_rigidbody.linearVelocity);
         _view.UpdateOnGroundParam(_groundChecker.OnGround());
         _view.UpdateJumpChargingParam(_jumper.IsCharging);
-    }
-
-    private void Dash()
-    {
-        Vector2 direction = InputDirection == Vector2.zero? _view.LookDirection : InputDirection.normalized;
-
-        if (_dasher.TryDash(direction))
-        {
-            _view.SetDashTrigger();
-            _view.PlayDashEffect(_dashDuration);
-        }
     }
 }

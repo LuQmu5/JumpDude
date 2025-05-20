@@ -352,14 +352,16 @@ MonoBehaviour:
   _groundMask:
     serializedVersion: 2
     m_Bits: 64
-  _jumpPower: 16
+  _jumpPower: 14
   _legsRadius: 0.25
-  _maxJumpHoldTime: 0.3
+  _maxJumpHoldTime: 0.5
   _doubleJumpTimer: 0.6
   _doubleJumpVFX: {fileID: 61577616}
-  _dashForce: 25
+  _minDashForce: 10
+  _maxDashForce: 25
   _dashDuration: 0.2
   _dashCooldown: 0.5
+  _dashChargeTime: 0.4
   _shadowRenderers:
   - {fileID: 1737297904}
   - {fileID: 1168238240}
