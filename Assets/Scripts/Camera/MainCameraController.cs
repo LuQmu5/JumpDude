@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
-public class JumpKingCamera : MonoBehaviour
+public class MainCameraController : MonoBehaviour
 {
     [SerializeField] private Transform _target;
-    [SerializeField] private Vector2 _offset = Vector2.zero;
 
     private Vector2 _cellSize;
     private Vector2Int _currentCell;
@@ -40,9 +39,13 @@ public class JumpKingCamera : MonoBehaviour
     {
         Vector2 targetPosition = _target.position;
 
+        // Смещение для центрирования персонажа
+        Vector2 offsetFromCenter = new Vector2(_cellSize.x / 2f, _cellSize.y / 2f);
+
+        // Центрированные ячейки (чтобы камера "обрамляла" персонажа)
         Vector2Int targetCell = new Vector2Int(
-            Mathf.FloorToInt(targetPosition.x / _cellSize.x),
-            Mathf.FloorToInt(targetPosition.y / _cellSize.y)
+            Mathf.FloorToInt((targetPosition.x + offsetFromCenter.x) / _cellSize.x),
+            Mathf.FloorToInt((targetPosition.y + offsetFromCenter.y) / _cellSize.y)
         );
 
         if (force || targetCell != _currentCell)
@@ -50,17 +53,11 @@ public class JumpKingCamera : MonoBehaviour
             _currentCell = targetCell;
 
             Vector2 cellCenter = new Vector2(
-                _currentCell.x * _cellSize.x + _cellSize.x / 2f,
-                _currentCell.y * _cellSize.y + _cellSize.y / 2f
+                _currentCell.x * _cellSize.x,
+                _currentCell.y * _cellSize.y
             );
 
-            Vector3 newCameraPosition = new Vector3(
-                cellCenter.x + _offset.x,
-                cellCenter.y + _offset.y,
-                transform.position.z
-            );
-
-            transform.position = newCameraPosition;
+            transform.position = new Vector3(cellCenter.x, cellCenter.y, transform.position.z);
         }
     }
 }
