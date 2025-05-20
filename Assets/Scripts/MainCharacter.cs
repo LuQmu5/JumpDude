@@ -30,6 +30,8 @@ public class MainCharacter : MonoBehaviour
     [SerializeField] private float _dashChargeTime = 1f;
     [SerializeField] private SpriteRenderer[] _shadowRenderers;
     [SerializeField] private TrailRenderer _dashTrailVFX;
+    [SerializeField] private LayerMask _enemyLayer;
+    [SerializeField] private float _dashHitRadius = 0.5f;
 
     private PlayerController _controller;
 
@@ -47,7 +49,8 @@ public class MainCharacter : MonoBehaviour
     {
         _controller = new PlayerController();
 
-        _view = new CharacterView(_spriteRenderer, _animator, _shadowRenderers, this, _doubleJumpVFX, _dashTrailVFX);
+        DashHitDetector hitDetector = new DashHitDetector(transform, _dashHitRadius, _enemyLayer);
+        _view = new CharacterView(_spriteRenderer, _animator, _shadowRenderers, this, _doubleJumpVFX, _dashTrailVFX, hitDetector);
 
         _groundChecker = new GroundChecker(_legsPoint, _legsRadius, _groundMask);
         _doubleJumpHandler = new DoubleJumpHandler(_groundChecker, _doubleJumpTimer);

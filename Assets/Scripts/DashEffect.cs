@@ -13,9 +13,11 @@ public class DashEffect
     private readonly TrailRenderer _dashTrailVFX;
     private readonly float _shadowInterval;
     private readonly float _shadowLifetime;
+    private readonly DashHitDetector _dashHitDetector;
 
 
     public DashEffect(SpriteRenderer[] shadows, SpriteRenderer characterRenderer, Transform characterTransform, MonoBehaviour mono, TrailRenderer dashTrailVFX,
+        DashHitDetector dashHitDetector,
         float shadowInterval = 0.05f, 
         float shadowLifetime = 0.2f)
     {
@@ -28,6 +30,8 @@ public class DashEffect
 
         _dashTrailVFX = dashTrailVFX;
         _dashTrailVFX.emitting = false;
+
+        _dashHitDetector = dashHitDetector;
 
         foreach (var s in _shadows)
         {
@@ -54,6 +58,8 @@ public class DashEffect
 
         while (timer < requiredDuration)
         {
+            _dashHitDetector.ProcessDashStep();
+
             SpriteRenderer shadow = _shadows[index % _shadows.Length];
             shadow.transform.position = _characterTransform.position;
             shadow.transform.rotation = _characterTransform.rotation;
