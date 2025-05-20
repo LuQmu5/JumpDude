@@ -6,4 +6,5 @@ public class CharacterSettings : ScriptableObject
     public MovementSettings movementSettings;
     public JumpSettings jumpSettings;
     public DashSettings dashSettings;
+    public GlideSettings glideSettings;
 }

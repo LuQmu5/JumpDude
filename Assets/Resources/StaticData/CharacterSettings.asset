@@ -15,3 +15,4 @@ MonoBehaviour:
   movementSettings: {fileID: 11400000, guid: f4d749373527c924f9b12c98625dd986, type: 2}
   jumpSettings: {fileID: 11400000, guid: 0d0446fb731e77d46b2d176ecbc6f274, type: 2}
   dashSettings: {fileID: 11400000, guid: f8a02b96e66b3134fab6bb2138ba0cb5, type: 2}
+  glideSettings: {fileID: 11400000, guid: 4a0bb471c271d7749823daffb9896f0e, type: 2}

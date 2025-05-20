@@ -9,15 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67ffaa7a122fa0b419d513c8afff3c70, type: 3}
-  m_Name: DashSettings
+  m_Script: {fileID: 11500000, guid: 4212a3d471a808d4ea7f16b3dd34f8b1, type: 3}
+  m_Name: GlideSettings
   m_EditorClassIdentifier: 
-  minDashForce: 25
-  maxDashForce: 50
-  dashDuration: 0.2
-  dashCooldown: 0.5
-  dashChargeTime: 0.4
-  dashHitRadius: 1
-  enemyLayer:
-    serializedVersion: 2
-    m_Bits: 256
+  gravityScale: 0.25
+  horizontalSpeedMultiplier: 0.5
+  gravityTransitionDuration: 0.25
+  glideKey: 32
+  glidingBoolParam: IsGliding

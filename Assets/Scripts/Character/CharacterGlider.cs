@@ -3,65 +3,73 @@
 public class CharacterGlider
 {
     private readonly Rigidbody2D _rigidbody;
-    private readonly GroundChecker _groundChecker;
-    private readonly float _glideGravityScale;
-    private readonly float _glideSpeedMultiplier;
+    private readonly GlideSettings _settings;
+    private readonly Animator _animator;
 
     private float _originalGravityScale;
+    private float _currentTransitionTime;
     private bool _isGliding;
 
     public bool IsGliding => _isGliding;
 
-    public CharacterGlider(Rigidbody2D rigidbody, GroundChecker groundChecker, float glideGravityScale, float glideSpeedMultiplier)
+    public CharacterGlider(Rigidbody2D rigidbody, Animator animator, GlideSettings settings)
     {
         _rigidbody = rigidbody;
-        _groundChecker = groundChecker;
-        _glideGravityScale = glideGravityScale;
-        _glideSpeedMultiplier = glideSpeedMultiplier;
+        _settings = settings;
+        _animator = animator;
 
         _originalGravityScale = _rigidbody.gravityScale;
     }
 
-    public void Update(bool jumpHeld, Vector2 inputDirection)
+    public void Update(bool isGrounded, bool jumpKeyHeld, float deltaTime)
     {
-        if (_groundChecker.OnGround())
+        if (isGrounded)
         {
-            if (_isGliding)
-                StopGlide();
+            StopGliding();
             return;
         }
 
-        if (jumpHeld && _rigidbody.linearVelocity.y < 0)
-        {
-            StartGlide();
-            ApplyGlideMovement(inputDirection);
-        }
-        else if (_isGliding)
-        {
-            StopGlide();
-        }
-    }
+        bool shouldGlide = jumpKeyHeld && _rigidbody.linearVelocity.y < 0;
 
-    private void StartGlide()
-    {
+        if (shouldGlide && !_isGliding)
+        {
+            StartGliding();
+        }
+        else if (!shouldGlide && _isGliding)
+        {
+            StopGliding();
+        }
+
         if (_isGliding)
-            return;
-
-        _isGliding = true;
-        _originalGravityScale = _rigidbody.gravityScale;
-        _rigidbody.gravityScale = _glideGravityScale;
+        {
+            _currentTransitionTime += deltaTime;
+            float t = Mathf.Clamp01(_currentTransitionTime / _settings.gravityTransitionDuration);
+            _rigidbody.gravityScale = Mathf.Lerp(_originalGravityScale, _settings.gravityScale, t);
+        }
+        else
+        {
+            _currentTransitionTime += deltaTime;
+            float t = Mathf.Clamp01(_currentTransitionTime / _settings.gravityTransitionDuration);
+            _rigidbody.gravityScale = Mathf.Lerp(_settings.gravityScale, _originalGravityScale, t);
+        }
     }
 
-    private void StopGlide()
+    private void StartGliding()
+    {
+        _isGliding = true;
+        _currentTransitionTime = 0f;
+        _animator.SetBool(_settings.glidingBoolParam, true);
+    }
+
+    private void StopGliding()
     {
         _isGliding = false;
-        _rigidbody.gravityScale = _originalGravityScale;
+        _currentTransitionTime = 0f;
+        _animator.SetBool(_settings.glidingBoolParam, false);
     }
 
-    private void ApplyGlideMovement(Vector2 inputDirection)
+    public float GetHorizontalSpeedMultiplier()
     {
-        Vector2 velocity = _rigidbody.linearVelocity;
-        velocity.x = inputDirection.x * _glideSpeedMultiplier;
-        _rigidbody.linearVelocity = velocity;
+        return _isGliding ? _settings.horizontalSpeedMultiplier : 1f;
     }
 }

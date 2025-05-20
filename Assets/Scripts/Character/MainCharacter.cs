@@ -17,10 +17,6 @@ public class MainCharacter : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private CharacterSettings _characterSettings;
 
-    [Header("Glide Settings")]
-    [SerializeField] private float _glideGravityScale = 0.5f;
-    [SerializeField] private float _glideSpeedMultiplier = 2f;
-
     private CharacterGlider _glider;
 
     private PlayerController _controller;
@@ -52,7 +48,7 @@ public class MainCharacter : MonoBehaviour
         _mover = new CharacterMover(_rigidbody, move.movementSpeed, _groundChecker, move.maxSpeedMultiplier, move.accelerationTime);
         _jumper = new CharacterJumper(_groundChecker, _rigidbody, jump.jumpPower, jump.maxJumpHoldTime, _doubleJumpHandler);
         _dasher = new CharacterDasher(this, _rigidbody, dash.minDashForce, dash.maxDashForce, dash.dashDuration, dash.dashCooldown, dash.dashChargeTime, _view.PlayDashEffect);
-        _glider = new CharacterGlider(_rigidbody, _groundChecker, _glideGravityScale, _glideSpeedMultiplier);
+        _glider = new CharacterGlider(_rigidbody, _animator, _characterSettings.glideSettings);
 
     }
 
@@ -86,13 +82,19 @@ public class MainCharacter : MonoBehaviour
 
         _dasher.UpdateDashCharge(Time.deltaTime);
 
-        bool jumpHeld = _controller.Player.Jump.ReadValue<float>() > 0;
-        _glider.Update(jumpHeld, InputDirection);
+        _glider.Update(_groundChecker.OnGround(), _controller.Player.Jump.IsPressed(), Time.deltaTime);
 
         UpdateView();
 
         if (CanMove)
-            _mover.SetMoveDirection(InputDirection);
+        {
+            float speedMultiplier = _glider.GetHorizontalSpeedMultiplier();
+            _mover.SetMoveDirection(InputDirection * speedMultiplier);
+        }
+        else
+        {
+            _mover.SetMoveDirection(Vector2.zero);
+        }
     }
 
 
