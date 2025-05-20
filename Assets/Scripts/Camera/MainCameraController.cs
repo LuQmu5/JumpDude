@@ -1,24 +1,39 @@
 ﻿using UnityEngine;
 
+[RequireComponent(typeof(Camera))]
 public class JumpKingCamera : MonoBehaviour
 {
-    [SerializeField] private Transform _target; 
-    [SerializeField] private Vector2 _cellSize = new Vector2(16, 9); 
-    [SerializeField] private Vector2 _offset = Vector2.zero;  
+    [SerializeField] private Transform _target;
+    [SerializeField] private Vector2 _offset = Vector2.zero;
 
+    private Vector2 _cellSize;
     private Vector2Int _currentCell;
+    private Camera _camera;
 
     private void Start()
     {
         if (_target == null)
+        {
             Debug.LogError("Camera target is not set!");
+            enabled = false;
+            return;
+        }
 
+        _camera = GetComponent<Camera>();
+        CalculateCellSize();
         UpdateCameraPosition(force: true);
     }
 
     private void LateUpdate()
     {
         UpdateCameraPosition();
+    }
+
+    private void CalculateCellSize()
+    {
+        float height = _camera.orthographicSize * 2f;
+        float width = height * _camera.aspect;
+        _cellSize = new Vector2(width, height);
     }
 
     private void UpdateCameraPosition(bool force = false)
@@ -39,7 +54,12 @@ public class JumpKingCamera : MonoBehaviour
                 _currentCell.y * _cellSize.y + _cellSize.y / 2f
             );
 
-            Vector3 newCameraPosition = new Vector3(cellCenter.x + _offset.x, cellCenter.y + _offset.y, transform.position.z);
+            Vector3 newCameraPosition = new Vector3(
+                cellCenter.x + _offset.x,
+                cellCenter.y + _offset.y,
+                transform.position.z
+            );
+
             transform.position = newCameraPosition;
         }
     }
