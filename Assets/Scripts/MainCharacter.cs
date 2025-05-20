@@ -29,6 +29,7 @@ public class MainCharacter : MonoBehaviour
     [SerializeField] private float _dashCooldown = 0.75f;
     [SerializeField] private float _dashChargeTime = 1f;
     [SerializeField] private SpriteRenderer[] _shadowRenderers;
+    [SerializeField] private TrailRenderer _dashTrailVFX;
 
     private PlayerController _controller;
 
@@ -46,7 +47,7 @@ public class MainCharacter : MonoBehaviour
     {
         _controller = new PlayerController();
 
-        _view = new CharacterView(_spriteRenderer, _animator, _shadowRenderers, this, _doubleJumpVFX);
+        _view = new CharacterView(_spriteRenderer, _animator, _shadowRenderers, this, _doubleJumpVFX, _dashTrailVFX);
 
         _groundChecker = new GroundChecker(_legsPoint, _legsRadius, _groundMask);
         _doubleJumpHandler = new DoubleJumpHandler(_groundChecker, _doubleJumpTimer);

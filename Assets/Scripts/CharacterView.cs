@@ -22,12 +22,13 @@ public class CharacterView
         Animator animator, 
         SpriteRenderer[] dashShadows, 
         MonoBehaviour monoBehaviour,
-        ParticleSystem doubleJumpVFX)
+        ParticleSystem doubleJumpVFX,
+        TrailRenderer dashTrailVFX)
     {
         _spriteRenderer = spriteRenderer;
         _animator = animator;
         _doubleJumpVFX = doubleJumpVFX;
-        _dashEffect = new DashEffect(dashShadows, _spriteRenderer, spriteRenderer.transform, monoBehaviour);
+        _dashEffect = new DashEffect(dashShadows, _spriteRenderer, spriteRenderer.transform, monoBehaviour, dashTrailVFX);
     }
 
     public void UpdateLookDirection(Vector2 direction)

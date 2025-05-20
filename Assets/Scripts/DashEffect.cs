@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using static UnityEngine.ParticleSystem;
 
 public class DashEffect
 {
@@ -9,10 +10,12 @@ public class DashEffect
     private readonly SpriteRenderer _characterRenderer;
     private readonly Transform _characterTransform;
     private readonly MonoBehaviour _mono;
+    private readonly TrailRenderer _dashTrailVFX;
     private readonly float _shadowInterval;
     private readonly float _shadowLifetime;
 
-    public DashEffect(SpriteRenderer[] shadows, SpriteRenderer characterRenderer, Transform characterTransform, MonoBehaviour mono, 
+
+    public DashEffect(SpriteRenderer[] shadows, SpriteRenderer characterRenderer, Transform characterTransform, MonoBehaviour mono, TrailRenderer dashTrailVFX,
         float shadowInterval = 0.05f, 
         float shadowLifetime = 0.2f)
     {
@@ -22,6 +25,9 @@ public class DashEffect
         _mono = mono;
         _shadowInterval = shadowInterval;
         _shadowLifetime = shadowLifetime;
+
+        _dashTrailVFX = dashTrailVFX;
+        _dashTrailVFX.emitting = false;
 
         foreach (var s in _shadows)
         {
@@ -42,6 +48,9 @@ public class DashEffect
 
         int minIterations = _shadows.Length;
         float requiredDuration = Mathf.Max(dashDuration, _shadowInterval * minIterations);
+
+        _dashTrailVFX.Clear();
+        _dashTrailVFX.emitting = true;
 
         while (timer < requiredDuration)
         {
@@ -64,6 +73,8 @@ public class DashEffect
 
             yield return new WaitForSeconds(_shadowInterval);
         }
+
+        _dashTrailVFX.emitting = false;
     }
 
 
