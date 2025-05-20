@@ -360,6 +360,8 @@ MonoBehaviour:
   - {fileID: 603624773}
   _dashTrailVFX: {fileID: 2045823752}
   _characterSettings: {fileID: 11400000, guid: 6139a87f49d582648804ac77b33064c4, type: 2}
+  _glideGravityScale: 0.5
+  _glideSpeedMultiplier: 0.5
 --- !u!1 &61577613
 GameObject:
   m_ObjectHideFlags: 0
@@ -6191,7 +6193,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 17661578}
-  _cellSize: {x: 24, y: 12}
   _offset: {x: 0, y: 0}
 --- !u!1 &539157738
 GameObject:

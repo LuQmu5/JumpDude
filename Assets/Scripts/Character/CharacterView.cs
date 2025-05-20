@@ -9,6 +9,7 @@ public class CharacterView
     private const string OnGround = nameof(OnGround);
     private const string Dash = nameof(Dash);
     private const string IsCharging = nameof(IsCharging);
+    private const string IsGliding = nameof(IsGliding);
 
     private readonly SpriteRenderer _spriteRenderer;
     private readonly Animator _animator;
@@ -53,10 +54,14 @@ public class CharacterView
         _animator.SetBool(OnGround, state);
     }
 
+    public void UpdateGlideParam(bool state)
+    {
+        _animator.SetBool(IsGliding, state);
+    }
+
     public void SetDashTrigger()
     {
         _animator.SetTrigger(Dash);
-
     }
 
     public void UpdateJumpChargingParam(bool state)

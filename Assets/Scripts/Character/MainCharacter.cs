@@ -17,6 +17,12 @@ public class MainCharacter : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private CharacterSettings _characterSettings;
 
+    [Header("Glide Settings")]
+    [SerializeField] private float _glideGravityScale = 0.5f;
+    [SerializeField] private float _glideSpeedMultiplier = 2f;
+
+    private CharacterGlider _glider;
+
     private PlayerController _controller;
     private CharacterMover _mover;
     private GroundChecker _groundChecker;
@@ -26,7 +32,7 @@ public class MainCharacter : MonoBehaviour
     private CharacterView _view;
 
     public Vector2 InputDirection { get; private set; }
-    public bool CanMove => !_dasher.IsDashing && _rigidbody.linearVelocityY >= 0;
+    public bool CanMove => !_dasher.IsDashing && (_rigidbody.linearVelocityY >= 0 || _glider.IsGliding);
 
     private void Awake()
     {
@@ -37,6 +43,7 @@ public class MainCharacter : MonoBehaviour
         var move = _characterSettings.movementSettings;
 
         DashHitDetector hitDetector = new DashHitDetector(transform, dash.dashHitRadius, dash.enemyLayer);
+
         _view = new CharacterView(_spriteRenderer, _animator, _shadowRenderers, this, _doubleJumpVFX, _dashTrailVFX, hitDetector);
 
         _groundChecker = new GroundChecker(_legsPoint, jump.legsRadius, jump.groundMask);
@@ -45,6 +52,8 @@ public class MainCharacter : MonoBehaviour
         _mover = new CharacterMover(_rigidbody, move.movementSpeed, _groundChecker, move.maxSpeedMultiplier, move.accelerationTime);
         _jumper = new CharacterJumper(_groundChecker, _rigidbody, jump.jumpPower, jump.maxJumpHoldTime, _doubleJumpHandler);
         _dasher = new CharacterDasher(this, _rigidbody, dash.minDashForce, dash.maxDashForce, dash.dashDuration, dash.dashCooldown, dash.dashChargeTime, _view.PlayDashEffect);
+        _glider = new CharacterGlider(_rigidbody, _groundChecker, _glideGravityScale, _glideSpeedMultiplier);
+
     }
 
     private void OnEnable()
@@ -71,15 +80,21 @@ public class MainCharacter : MonoBehaviour
     private void Update()
     {
         _doubleJumpHandler.Update(Time.deltaTime);
+
         _jumper.UpdateCharge(Time.deltaTime);
         _jumper.UpdateJumpDirection(InputDirection);
+
         _dasher.UpdateDashCharge(Time.deltaTime);
+
+        bool jumpHeld = _controller.Player.Jump.ReadValue<float>() > 0;
+        _glider.Update(jumpHeld, InputDirection);
 
         UpdateView();
 
         if (CanMove)
             _mover.SetMoveDirection(InputDirection);
     }
+
 
     private void TryStartJumpCharge() => _jumper.TryStartCharge();
 
@@ -123,5 +138,6 @@ public class MainCharacter : MonoBehaviour
         _view.UpdateVelocityParams(_rigidbody.linearVelocity);
         _view.UpdateOnGroundParam(_groundChecker.OnGround());
         _view.UpdateJumpChargingParam(_jumper.IsCharging);
+        _view.UpdateGlideParam(_glider.IsGliding);
     }
 }
