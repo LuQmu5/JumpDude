@@ -242,7 +242,6 @@ GameObject:
   - component: {fileID: 17661578}
   - component: {fileID: 17661579}
   - component: {fileID: 17661580}
-  - component: {fileID: 17661581}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -330,36 +329,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!114 &17661581
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 17661576}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ea2d77c34bd76346bcde09be60df661, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _rigidbody: {fileID: 17661580}
-  _spriteRenderer: {fileID: 13833265}
-  _animator: {fileID: 13833266}
-  _legsPoint: {fileID: 687224244}
-  _doubleJumpVFX: {fileID: 61577616}
-  _shadowRenderers:
-  - {fileID: 1737297904}
-  - {fileID: 1168238240}
-  - {fileID: 920780573}
-  - {fileID: 201425301}
-  - {fileID: 993212333}
-  - {fileID: 1460966631}
-  - {fileID: 540233007}
-  - {fileID: 539157740}
-  - {fileID: 551129680}
-  - {fileID: 603624773}
-  _dashTrailVFX: {fileID: 2045823752}
-  _characterSettings: {fileID: 11400000, guid: 6139a87f49d582648804ac77b33064c4, type: 2}
 --- !u!1 &61577613
 GameObject:
   m_ObjectHideFlags: 0

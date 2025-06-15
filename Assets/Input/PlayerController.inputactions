@@ -33,12 +33,21 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "DoubleJump",
+                    "name": "FastFall",
                     "type": "Button",
                     "id": "f2c876c9-e5da-4a3f-a0d5-37d0cd968736",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Hook",
+                    "type": "Button",
+                    "id": "c6b37cc4-84e5-4fb8-9c85-0a2809effc95",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
                     "initialStateCheck": false
                 }
             ],
@@ -105,7 +114,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "DoubleJump",
+                    "action": "FastFall",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "89bd656f-bfae-4bbc-a242-907538ff8b21",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Hook",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
