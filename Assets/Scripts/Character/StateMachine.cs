@@ -14,8 +14,10 @@ public class StateMachine : MonoBehaviour
     public void ChangeState(PlayerState newState)
     {
         _currentState?.Exit();
+        Debug.Log($"Exit from state: {_currentState.GetType()}");
         _currentState = newState;
         _currentState.Enter();
+        Debug.Log($"Enter to new state: {_currentState.GetType()}");
     }
 
     private void Update()
