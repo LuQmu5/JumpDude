@@ -6,7 +6,7 @@ public class WallClingState : PlayerState
 
     public override void Enter()
     {
-        player.rb.velocity = Vector2.zero;
+        player.rb.linearVelocity = Vector2.zero;
         player.rb.gravityScale = 0.2f;
         player.GetComponent<AnimationController>()?.PlayWallCling();
     }
@@ -32,7 +32,7 @@ public class WallClingState : PlayerState
     public override void PhysicsUpdate()
     {
         // Легкий спад вниз при прилипания к стене
-        player.rb.velocity = new Vector2(0, -0.5f);
+        player.rb.linearVelocity = new Vector2(0, -0.5f);
     }
 }
 

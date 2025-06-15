@@ -24,6 +24,7 @@ public class StateMachine : MonoBehaviour
     {
         _currentState?.HandleInput();
         _currentState?.LogicUpdate();
+        Debug.Log("Test");
     }
 
     private void FixedUpdate()

@@ -7,9 +7,9 @@ public class AnimationController : MonoBehaviour
 
     void Update()
     {
-        anim.SetFloat("Speed", Mathf.Abs(player.rb.velocity.x));
+        anim.SetFloat("Speed", Mathf.Abs(player.rb.linearVelocity.x));
         anim.SetBool("IsGrounded", player.IsGrounded);
-        anim.SetFloat("VerticalSpeed", player.rb.velocity.y);
+        anim.SetFloat("VerticalSpeed", player.rb.linearVelocity.y);
     }
 
     public void PlayHook() => anim.SetTrigger("Hook");

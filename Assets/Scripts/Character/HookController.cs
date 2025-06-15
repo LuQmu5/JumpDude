@@ -35,12 +35,12 @@ public class HookController : MonoBehaviour
                 Destroy(hit.collider.gameObject);
                 // Маленькое притягивание
                 Vector2 pullDir = (hit.point - (Vector2)player.transform.position).normalized;
-                player.rb.velocity = pullDir * (pullForce * 0.5f);
+                player.rb.linearVelocity = pullDir * (pullForce * 0.5f);
             }
             else
             {
                 // Притягиваем к стене
-                player.rb.velocity = (hit.point - (Vector2)player.transform.position).normalized * pullForce;
+                player.rb.linearVelocity = (hit.point - (Vector2)player.transform.position).normalized * pullForce;
             }
 
             return true;
