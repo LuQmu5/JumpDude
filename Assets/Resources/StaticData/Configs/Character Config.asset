@@ -17,3 +17,4 @@ MonoBehaviour:
   <GroundCheckConfig>k__BackingField: {fileID: 11400000, guid: e0a49a27abee93f4eb142cafb7368453, type: 2}
   <JumpConfig>k__BackingField: {fileID: 11400000, guid: 5353be1f8358eee4ba3be77818a73b19, type: 2}
   <MovementConfig>k__BackingField: {fileID: 11400000, guid: 1fac48f30f834df479acf45586d05946, type: 2}
+  <FallConfig>k__BackingField: {fileID: 11400000, guid: 792cc4d1a0d03774eb3c94e228c20a90, type: 2}

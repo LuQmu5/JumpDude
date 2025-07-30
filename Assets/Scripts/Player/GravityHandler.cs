@@ -11,8 +11,11 @@ public class GravityHandler
         _groundChecker = groundChecker;
     }
 
-    public void HandleGravity()
+    public void HandleGravity(bool isFallingActive)
     {
+        if (isFallingActive)
+            return;
+
         if (_groundChecker.OnGround() && _rigidbody.linearVelocityY <= 0)
             _rigidbody.linearVelocityY = 0;
     }

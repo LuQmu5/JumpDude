@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     private JumpHandler _jumpHandler;
     private GlideHandler _glideHandler;
     private DashHandler _dashHandler;
+    private FallHandler _fallHandler;
 
     private Vector3 _rightRotation = Vector3.zero;
     private Vector3 _leftRotation = new Vector3(0, 180, 0);
@@ -29,6 +30,7 @@ public class PlayerController : MonoBehaviour
         _jumpHandler = new JumpHandler(_characterConfig.JumpConfig, _rigidbody, _groundChecker, this);
         _glideHandler = new GlideHandler(_characterConfig.GlideConfig, _rigidbody, this, _groundChecker);
         _dashHandler = new DashHandler(_characterConfig.DashConfig, _rigidbody, this, _dashEffect);
+        _fallHandler = new FallHandler(_characterConfig.FallConfig, _rigidbody, GetComponent<Collider2D>(), _legs, _groundChecker, this);
 
         _input = new PlayerInput();
         _input.Enable();
@@ -38,11 +40,14 @@ public class PlayerController : MonoBehaviour
 
         _input.Movement.Dash.started += OnDashStarted;
         _input.Movement.Dash.canceled += OnDashPerformed;
+
+        _input.Movement.Fall.started += OnFallStarted;
+        _input.Movement.Fall.canceled += OnFallPerformed;
     }
 
     private void Update()
     {
-        _gravityHandler.HandleGravity();
+        _gravityHandler.HandleGravity(_fallHandler.IsFalling);
 
         _movementHandler.IsGliding = _glideHandler.IsGliding;
         _movementHandler.UpdateFallState();
@@ -58,6 +63,7 @@ public class PlayerController : MonoBehaviour
         _view.SetVelocityY(_rigidbody.linearVelocityY);
         _view.SetOnGroundState(_groundChecker.OnGround());
         _view.SetGlidingState(_glideHandler.IsGliding);
+        _view.SetFallState(_fallHandler.IsFalling);
     }
 
     private void HandleMovement()
@@ -101,6 +107,16 @@ public class PlayerController : MonoBehaviour
     {
         if (_dashHandler.TryReleaseDash())
             _view.SetDashTrigger();
+    }
+
+    private void OnFallPerformed(CallbackContext context)
+    {
+        _fallHandler.StartFall();
+    }
+
+    private void OnFallStarted(CallbackContext context)
+    {
+        _fallHandler.StopFall();
     }
 
     private void RotateFromVelocity(float velocity)

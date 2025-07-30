@@ -34,4 +34,9 @@ public class PlayerView : MonoBehaviour
     {
         _animator.SetTrigger("Dash");
     }
+
+    public void SetFallState(bool state)
+    {
+        _animator.SetBool("IsFalling", state);
+    }
 }

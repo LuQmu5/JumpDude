@@ -9,10 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42eca8105042369409796847fabbea13, type: 3}
-  m_Name: Ground Check Config
+  m_Script: {fileID: 11500000, guid: fa982fe3eba2eb34c80c21a4a9af42e5, type: 3}
+  m_Name: Fall Config
   m_EditorClassIdentifier: 
-  <LegsRadius>k__BackingField: 0.1
-  <GroundMask>k__BackingField:
+  <GravityMultiplier>k__BackingField: 3
+  <AcceleratedFallForce>k__BackingField: 15
+  <DisableCollisionDuration>k__BackingField: 0.5
+  <PlatformLayer>k__BackingField:
     serializedVersion: 2
-    m_Bits: 576
+    m_Bits: 512
