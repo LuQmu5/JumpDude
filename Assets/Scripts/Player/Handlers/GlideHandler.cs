@@ -10,6 +10,7 @@ public class GlideHandler
     private float _glideGravityScale;
     private float _glideMovementSpeedMultiplier;
     private float _changeGravityDuration;
+    private float _instantGravityScaleMultiplier;
 
     private float _baseGravityScale;
 
@@ -20,6 +21,7 @@ public class GlideHandler
         _glideGravityScale = config.ModifiedGravityScale;
         _glideMovementSpeedMultiplier = config.MovementSpeedMultiplier;
         _changeGravityDuration = config.ChangeGravityDuration;
+        _instantGravityScaleMultiplier = config.InstantGravityScaleMultiplier;
 
         _rigidbody = rigidbody;
         _baseGravityScale = _rigidbody.gravityScale;
@@ -44,17 +46,21 @@ public class GlideHandler
 
     private IEnumerator ChangeGravityScale(float from, float to, float duration)
     {
+        float mid = Mathf.Lerp(from, to, _instantGravityScaleMultiplier);
+        _rigidbody.gravityScale = mid;
+
         float elapsed = 0f;
 
         while (elapsed < duration)
         {
-            _rigidbody.gravityScale = Mathf.Lerp(from, to, elapsed / duration);
+            _rigidbody.gravityScale = Mathf.Lerp(mid, to, elapsed / duration);
             elapsed += Time.deltaTime;
             yield return null;
         }
 
         _rigidbody.gravityScale = to;
     }
+
 
     private IEnumerator GlideProcessing()
     {

@@ -8,9 +8,11 @@ public class HookHandler
     private readonly Transform _hookStartPoint;
     private readonly LayerMask _hookableLayer;
     private readonly float _pullForce;
+    private readonly float _pullFinalForce;
     private readonly float _maxDistance;
     private readonly float _minDistance;
     private readonly LineRenderer _lineRenderer;
+    private readonly Collider2D _collider;
 
     private Coroutine _hookRoutine;
     private bool _isHooking;
@@ -22,15 +24,18 @@ public class HookHandler
         Rigidbody2D rigidbody,
         Transform hookStartPoint,
         MonoBehaviour coroutineRunner,
-        LineRenderer lineRenderer)
+        LineRenderer lineRenderer,
+        Collider2D collider)
     {
         _rigidbody = rigidbody;
+        _collider = collider;
         _coroutineRunner = coroutineRunner;
         _hookStartPoint = hookStartPoint;
         _hookableLayer = config.HookableLayer;
         _pullForce = config.PullForce;
         _maxDistance = config.MaxDistance;
         _minDistance = config.MinDistance;
+        _pullFinalForce = config.PullFinalForce;
         _lineRenderer = lineRenderer;
         _lineRenderer.enabled = false;
     }
@@ -88,9 +93,9 @@ public class HookHandler
             _lineRenderer.SetPosition(0, _hookStartPoint.position);
             _lineRenderer.SetPosition(1, hookPoint);
 
-            if (Vector2.Distance(playerPos, hookPoint) < 0.5f)
+            if (Vector2.Distance(playerPos, hookPoint) < _collider.bounds.size.x)
             {
-                _rigidbody.AddForce(Vector2.up * _pullForce * 0.1f, ForceMode2D.Impulse);
+                _rigidbody.AddForce(Vector2.up * _pullForce * _pullFinalForce, ForceMode2D.Impulse);
                 break;
             }
 

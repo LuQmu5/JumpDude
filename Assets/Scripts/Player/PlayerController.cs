@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 _rightRotation = Vector3.zero;
     private Vector3 _leftRotation = new Vector3(0, 180, 0);
 
-    private bool _isInited = false;
+    private bool _inAction = false;
 
     public void Init()
     {
@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour
         _jumpHandler = new JumpHandler(_characterConfig.JumpConfig, _rigidbody, _groundChecker, this);
         _glideHandler = new GlideHandler(_characterConfig.GlideConfig, _rigidbody, this, _groundChecker);
         _dashHandler = new DashHandler(_characterConfig.DashConfig, _rigidbody, this, _dashEffect);
-        _hookHandler = new HookHandler(_characterConfig.HookConfig, _rigidbody, _hookPoint, this, _hookRenderer);
+        _hookHandler = new HookHandler(_characterConfig.HookConfig, _rigidbody, _hookPoint, this, _hookRenderer, _collider);
 
         _input = new PlayerInput();
         _input.Enable();
@@ -54,15 +54,10 @@ public class PlayerController : MonoBehaviour
 
         _input.Movement.Hook.started += OnHookStarted;
         _input.Movement.Hook.canceled += OnHookCanceled;
-
-        _isInited = true;
     }
 
     private void Update()
     {
-        if (_isInited == false)
-            return;
-
         _gravityHandler.HandleGravity(_fallHandler.IsFalling);
 
         _movementHandler.IsGliding = _glideHandler.IsGliding;
@@ -98,18 +93,28 @@ public class PlayerController : MonoBehaviour
     private void OnHookCanceled(CallbackContext context)
     {
         _hookHandler.StopHook();
+        _inAction = false;
     }
 
     private void OnHookStarted(CallbackContext context)
     {
+        if (_inAction || _glideHandler.IsGliding)
+            return;
+
         Vector3 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         if (_hookHandler.StartHook(direction))
+        {
             RotateFromVelocity(direction.x - transform.position.x);
+            _inAction = true;
+        }
     }
 
     private void OnJumpStarted(CallbackContext context)
     {
+        if (_inAction)
+            return;
+
         if (_rigidbody.linearVelocityY >= 0)
             _jumpHandler.StartJump();
         else
@@ -130,6 +135,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnDashStarted(CallbackContext context)
     {
+        if (_inAction)
+            return;
+
         _dashHandler.StartDash();
     }
 
@@ -142,10 +150,15 @@ public class PlayerController : MonoBehaviour
     private void OnFastFallCanceled(CallbackContext context)
     {
         _fallHandler.StopFastFall();
+        _inAction = false;
     }
 
     private void OnFastFallStarted(CallbackContext context)
     {
+        if (_inAction)
+            return;
+
+        _inAction = true;
         _fallHandler.StartFastFall();
     }
 

@@ -16,5 +16,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 832
   <PullForce>k__BackingField: 100
-  <MaxDistance>k__BackingField: 10
-  <MinDistance>k__BackingField: 2
+  <PullFinalForce>k__BackingField: 0.1
+  <MaxDistance>k__BackingField: 12
+  <MinDistance>k__BackingField: 4
