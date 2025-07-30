@@ -4,19 +4,25 @@ using UnityEngine;
 public class GlideHandler
 {
     private Rigidbody2D _rigidbody;
-    private float _baseGravityScale;
     private GroundChecker _groundChecker;
     private MonoBehaviour _coroutineRunner;
 
-    private float _glideGravityScale = 0.3f;
-    private float _glideMovementSpeedMultiplier = 0.65f;
+    private float _glideGravityScale;
+    private float _glideMovementSpeedMultiplier;
+    private float _changeGravityDuration;
+
+    private float _baseGravityScale;
 
     public float GlideMovementSpeedMultiplier => _glideMovementSpeedMultiplier;
 
-    public GlideHandler(Rigidbody2D rigidbody, float baseGravityScale, MonoBehaviour coroutineRunner, GroundChecker groundChecker)
+    public GlideHandler(GlideConfig config, Rigidbody2D rigidbody, MonoBehaviour coroutineRunner, GroundChecker groundChecker)
     {
+        _glideGravityScale = config.ModifiedGravityScale;
+        _glideMovementSpeedMultiplier = config.MovementSpeedMultiplier;
+        _changeGravityDuration = config.ChangeGravityDuration;
+
         _rigidbody = rigidbody;
-        _baseGravityScale = baseGravityScale;
+        _baseGravityScale = _rigidbody.gravityScale;
         _coroutineRunner = coroutineRunner;
         _groundChecker = groundChecker;
     }
@@ -26,14 +32,14 @@ public class GlideHandler
     public void StartGlide()
     {
         IsGliding = true;
-        _coroutineRunner.StartCoroutine(ChangeGravityScale(_rigidbody.gravityScale, _glideGravityScale, 0.25f));
+        _coroutineRunner.StartCoroutine(ChangeGravityScale(_rigidbody.gravityScale, _glideGravityScale, _changeGravityDuration));
         _coroutineRunner.StartCoroutine(GlideProcessing());
     }
 
     public void StopGlide()
     {
         IsGliding = false;
-        _coroutineRunner.StartCoroutine(ChangeGravityScale(_rigidbody.gravityScale, _baseGravityScale, 0.25f));
+        _coroutineRunner.StartCoroutine(ChangeGravityScale(_rigidbody.gravityScale, _baseGravityScale, _changeGravityDuration));
     }
 
     private IEnumerator ChangeGravityScale(float from, float to, float duration)
@@ -49,7 +55,6 @@ public class GlideHandler
 
         _rigidbody.gravityScale = to;
     }
-
 
     private IEnumerator GlideProcessing()
     {

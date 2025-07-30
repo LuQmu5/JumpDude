@@ -4,12 +4,13 @@ public class GroundChecker
 {
     private LayerMask _groundMask;
     private Transform _legsPoint;
-    private float _legsRadius = 0.1f;
+    private float _legsRadius;
 
-    public GroundChecker(LayerMask groundMask, Transform legsPoint)
+    public GroundChecker(GroundCheckConfig config, Transform legsPoint)
     {
-        _groundMask = groundMask;
+        _groundMask = config.GroundMask;
         _legsPoint = legsPoint;
+        _legsRadius = config.LegsRadius;
     }
 
     public bool OnGround() => Physics2D.OverlapCircle(_legsPoint.position, _legsRadius, _groundMask);

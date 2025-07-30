@@ -7,12 +7,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerView _view;
     [SerializeField] private Rigidbody2D _rigidbody;
     [SerializeField] private Transform _legs;
-    [SerializeField] private LayerMask _groundMask;
-    [SerializeField] private float _movementSpeed = 10;
-    [SerializeField] private float _jumpPower = 10;
-    [SerializeField] private float _dashPower = 10;
-    [SerializeField] private float _dashCooldown = 1;
     [SerializeField] private DashEffect _dashEffect;
+    [SerializeField] private CharacterConfig _characterConfig;
 
     private PlayerInput _input;
     private GroundChecker _groundChecker;
@@ -27,12 +23,12 @@ public class PlayerController : MonoBehaviour
 
     public void Init()
     {
-        _groundChecker = new GroundChecker(_groundMask, _legs);
+        _groundChecker = new GroundChecker(_characterConfig.GroundCheckConfig, _legs);
         _gravityHandler = new GravityHandler(_rigidbody, _groundChecker);
-        _movementHandler = new MovementHandler(_movementSpeed, _rigidbody, this);
-        _jumpHandler = new JumpHandler(_jumpPower, _rigidbody, _groundChecker, this);
-        _glideHandler = new GlideHandler(_rigidbody, _rigidbody.gravityScale, this, _groundChecker);
-        _dashHandler = new DashHandler(_rigidbody, _dashPower, _dashCooldown, this, _dashEffect);
+        _movementHandler = new MovementHandler(_characterConfig.MovementConfig, _rigidbody, this);
+        _jumpHandler = new JumpHandler(_characterConfig.JumpConfig, _rigidbody, _groundChecker, this);
+        _glideHandler = new GlideHandler(_characterConfig.GlideConfig, _rigidbody, this, _groundChecker);
+        _dashHandler = new DashHandler(_characterConfig.DashConfig, _rigidbody, this, _dashEffect);
 
         _input = new PlayerInput();
         _input.Enable();

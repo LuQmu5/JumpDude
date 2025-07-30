@@ -4,18 +4,24 @@ using UnityEngine;
 
 public class MovementHandler
 {
-    private readonly float _movementSpeed;
-    private readonly Rigidbody2D _rigidbody;
-    private readonly MonoBehaviour _coroutineRunner;
+    private Rigidbody2D _rigidbody;
+    private MonoBehaviour _coroutineRunner;
+
+    private float _movementSpeed;
+    private float _slowDownSpeed;
+    private float _fallSpeedXMultiplier;
 
     private Coroutine _slowdownCoroutine;
     private bool _isFalling = false;
 
     public bool IsGliding { get; set; } = false;
 
-    public MovementHandler(float movementSpeed, Rigidbody2D rigidbody, MonoBehaviour coroutineRunner)
+    public MovementHandler(MovementConfig config, Rigidbody2D rigidbody, MonoBehaviour coroutineRunner)
     {
-        _movementSpeed = movementSpeed;
+        _movementSpeed = config.Speed;
+        _slowDownSpeed = config.SlowDownSpeed;
+        _fallSpeedXMultiplier = config.FallSpeedXMultiplier;
+
         _rigidbody = rigidbody;
         _coroutineRunner = coroutineRunner;
     }
@@ -67,11 +73,11 @@ public class MovementHandler
     private IEnumerator SlowdownCoroutine()
     {
         float initialX = _rigidbody.linearVelocity.x;
-        float targetX = initialX * 0.2f;
+        float targetX = initialX * _fallSpeedXMultiplier;
 
         while (_isFalling && Mathf.Abs(_rigidbody.linearVelocity.x - targetX) > 0.01f)
         {
-            float newX = Mathf.Lerp(_rigidbody.linearVelocity.x, targetX, 5f * Time.deltaTime);
+            float newX = Mathf.Lerp(_rigidbody.linearVelocity.x, targetX, _slowDownSpeed * Time.deltaTime);
             _rigidbody.linearVelocityX = newX;
 
             yield return null;

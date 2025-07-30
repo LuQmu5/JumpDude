@@ -1,29 +1,34 @@
 ﻿using System.Collections;
 using UnityEngine;
 
+
 public class DashHandler
 {
     private readonly Rigidbody2D _rigidbody;
     private readonly MonoBehaviour _coroutineRunner;
     private readonly DashEffect _dashEffect;
 
-    private readonly float _minHoldTime = 0.25f;
-    private readonly float _maxHoldTime = 0.5f;
+    private readonly float _minHoldTime;
+    private readonly float _maxHoldTime;
     private readonly float _dashPower;
     private readonly float _cooldown;
-    private readonly float _dashDuration = 0.2f;
+    private readonly float _dashDuration;
 
     private bool _canDash = true;
     private float _dashHoldStartTime;
 
     public bool IsDashing { get; private set; } = false;
 
-    public DashHandler(Rigidbody2D rigidbody, float dashPower, float cooldown,
+    public DashHandler(DashConfig config, Rigidbody2D rigidbody,
                        MonoBehaviour coroutineRunner, DashEffect dashEffect)
     {
+        _dashPower = config.Power;
+        _cooldown = config.Cooldown;
+        _dashDuration = config.Duration;
+        _minHoldTime = config.MinHoldTime;
+        _maxHoldTime = config.MaxHoldTime;
+
         _rigidbody = rigidbody;
-        _dashPower = dashPower;
-        _cooldown = cooldown;
         _coroutineRunner = coroutineRunner;
         _dashEffect = dashEffect;
     }

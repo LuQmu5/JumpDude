@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
+
 public class DashEffect : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer[] _shadows;

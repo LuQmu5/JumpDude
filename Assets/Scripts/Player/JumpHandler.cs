@@ -8,15 +8,20 @@ public class JumpHandler
     private MonoBehaviour _coroutineRunner;
 
     private float _jumpPower;
-    private int _extraJumpsCount;
-    private int _maxExtraJumpsCount = 1;
-    private float _minHoldTime = 0.25f;
-    private float _maxHoldTime = 0.5f;
-    private float _jumpHoldStartTime;
+    private int _maxExtraJumpsCount;
+    private float _minHoldTime;
+    private float _maxHoldTime;
 
-    public JumpHandler(float jumpPower, Rigidbody2D rigidbody, GroundChecker groundChecker, MonoBehaviour coroutineRunner)
+    private float _jumpHoldStartTime;
+    private int _extraJumpsCount;
+
+    public JumpHandler(JumpConfig config, Rigidbody2D rigidbody, GroundChecker groundChecker, MonoBehaviour coroutineRunner)
     {
-        _jumpPower = jumpPower;
+        _jumpPower = config.Power;
+        _maxExtraJumpsCount = config.ExtraJumpsCount;
+        _minHoldTime = config.MinHoldTime;
+        _maxHoldTime = config.MaxHoldTime;
+
         _rigidbody = rigidbody;
         _groundChecker = groundChecker;
         _coroutineRunner = coroutineRunner;
