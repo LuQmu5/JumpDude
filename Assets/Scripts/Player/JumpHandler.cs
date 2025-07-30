@@ -8,6 +8,7 @@ public class JumpHandler
     private MonoBehaviour _coroutineRunner;
 
     private float _jumpPower;
+    private float _extraJumpPower;
     private int _maxExtraJumpsCount;
     private float _minHoldTime;
     private float _maxHoldTime;
@@ -18,6 +19,7 @@ public class JumpHandler
     public JumpHandler(JumpConfig config, Rigidbody2D rigidbody, GroundChecker groundChecker, MonoBehaviour coroutineRunner)
     {
         _jumpPower = config.Power;
+        _extraJumpPower = config.ExtraPower;
         _maxExtraJumpsCount = config.ExtraJumpsCount;
         _minHoldTime = config.MinHoldTime;
         _maxHoldTime = config.MaxHoldTime;
@@ -45,7 +47,7 @@ public class JumpHandler
         float clampedHold = Mathf.Clamp(heldTime, _minHoldTime, _maxHoldTime);
         float powerPercent = clampedHold / _maxHoldTime;
 
-        float finalJumpForce = _jumpPower * powerPercent;
+        float finalJumpForce = _jumpPower + _extraJumpPower * powerPercent;
 
         _rigidbody.linearVelocity = new Vector2(_rigidbody.linearVelocityX, 0f);
         _rigidbody.AddForce(Vector2.up * finalJumpForce, ForceMode2D.Impulse);

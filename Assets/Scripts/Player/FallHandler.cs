@@ -38,7 +38,7 @@ public class FallHandler
         _acceleratedFallForce = config.AcceleratedFallForce;
         _platformLayer = config.PlatformLayer;
         _groundLayer = config.GroundLayer;
-        _baseGravityScale = 1.2f;
+        _baseGravityScale = rigidbody.gravityScale;
 
         _rigidbody = rigidbody;
         _playerCollider = playerCollider;
