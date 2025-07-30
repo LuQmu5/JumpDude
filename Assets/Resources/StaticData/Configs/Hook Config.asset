@@ -18,4 +18,5 @@ MonoBehaviour:
   <PullForce>k__BackingField: 100
   <PullFinalForce>k__BackingField: 0.1
   <MaxDistance>k__BackingField: 12
-  <MinDistance>k__BackingField: 4
+  <MinDistanceY>k__BackingField: 1.5
+  <MinTotalDistance>k__BackingField: 3

@@ -15,4 +15,4 @@ MonoBehaviour:
   <ModifiedGravityScale>k__BackingField: 0.25
   <MovementSpeedMultiplier>k__BackingField: 0.75
   <ChangeGravityDuration>k__BackingField: 0.25
-  <InstantGravityScaleMultiplier>k__BackingField: 0.6
+  <InstantGravityScaleMultiplier>k__BackingField: 0.9

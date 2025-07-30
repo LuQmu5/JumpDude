@@ -11,6 +11,8 @@ public class HookHandler
     private readonly float _pullFinalForce;
     private readonly float _maxDistance;
     private readonly float _minDistance;
+    private readonly float _minDistanceY;
+    private readonly float _minTotalDistance;
     private readonly LineRenderer _lineRenderer;
     private readonly Collider2D _collider;
 
@@ -34,12 +36,12 @@ public class HookHandler
         _hookableLayer = config.HookableLayer;
         _pullForce = config.PullForce;
         _maxDistance = config.MaxDistance;
-        _minDistance = config.MinDistance;
+        _minDistanceY = config.MinDistanceY;
+        _minTotalDistance = config.MinTotalDistance;
         _pullFinalForce = config.PullFinalForce;
         _lineRenderer = lineRenderer;
         _lineRenderer.enabled = false;
     }
-
     public bool StartHook(Vector2 cursorWorldPosition)
     {
         if (_isHooking || _hookRoutine != null)
@@ -48,9 +50,10 @@ public class HookHandler
         Vector2 start = _hookStartPoint.position;
         Vector2 dir = (cursorWorldPosition - start).normalized;
 
-        float distanceToCursor = Vector2.Distance(start, cursorWorldPosition);
+        float totalDistance = Vector2.Distance(start, cursorWorldPosition);
+        float heightDifference = Mathf.Abs(cursorWorldPosition.y - start.y);
 
-        if (distanceToCursor < _minDistance)
+        if (totalDistance < _minTotalDistance || heightDifference < _minDistanceY)
             return false;
 
         RaycastHit2D hit = Physics2D.Raycast(start, dir, _maxDistance, _hookableLayer);
@@ -59,9 +62,9 @@ public class HookHandler
             return false;
 
         _hookRoutine = _coroutineRunner.StartCoroutine(HookRoutine(cursorWorldPosition, hit));
-
         return true;
     }
+
 
     public void StopHook()
     {
@@ -93,7 +96,7 @@ public class HookHandler
             _lineRenderer.SetPosition(0, _hookStartPoint.position);
             _lineRenderer.SetPosition(1, hookPoint);
 
-            if (Vector2.Distance(playerPos, hookPoint) < _collider.bounds.size.x)
+            if (Vector2.Distance(playerPos, hookPoint) < _collider.bounds.size.x * 2)
             {
                 _rigidbody.AddForce(Vector2.up * _pullForce * _pullFinalForce, ForceMode2D.Impulse);
                 break;
