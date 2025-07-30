@@ -1,19 +1,19 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
 public class MainCameraController : MonoBehaviour
 {
-    [SerializeField] private Transform _target;
-
+    private Transform _target;
+    private Camera _camera;
     private Vector2 _cellSize;
     private Vector2Int _currentCell;
-    private Camera _camera;
 
-    private void Start()
+    public void Init(Transform target)
     {
+        _target = target;
+
         if (_target == null)
         {
-            Debug.LogError("Camera target is not set!");
             enabled = false;
             return;
         }
@@ -37,12 +37,12 @@ public class MainCameraController : MonoBehaviour
 
     private void UpdateCameraPosition(bool force = false)
     {
-        Vector2 targetPosition = _target.position;
+        if (_target == null)
+            return;
 
-        // Смещение для центрирования персонажа
+        Vector2 targetPosition = _target.position;
         Vector2 offsetFromCenter = new Vector2(_cellSize.x / 2f, _cellSize.y / 2f);
 
-        // Центрированные ячейки (чтобы камера "обрамляла" персонажа)
         Vector2Int targetCell = new Vector2Int(
             Mathf.FloorToInt((targetPosition.x + offsetFromCenter.x) / _cellSize.x),
             Mathf.FloorToInt((targetPosition.y + offsetFromCenter.y) / _cellSize.y)
