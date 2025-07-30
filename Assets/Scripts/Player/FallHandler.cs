@@ -10,6 +10,7 @@ public class FallHandler
     private readonly Transform _legsPoint;
     private readonly LayerMask _platformLayer;
     private readonly LayerMask _groundLayer;
+    private readonly TrailRenderer _trailRenderer;
 
     private readonly float _fallGravityScale;
     private readonly float _acceleratedFallForce;
@@ -30,7 +31,8 @@ public class FallHandler
         Rigidbody2D rigidbody,
         Collider2D playerCollider,
         Transform legsPoint,
-        MonoBehaviour coroutineRunner)
+        MonoBehaviour coroutineRunner,
+        TrailRenderer trailRenderer)
     {
         _fallGravityScale = config.GravityMultiplier;
         _acceleratedFallForce = config.AcceleratedFallForce;
@@ -42,6 +44,9 @@ public class FallHandler
         _playerCollider = playerCollider;
         _legsPoint = legsPoint;
         _coroutineRunner = coroutineRunner;
+        _trailRenderer = trailRenderer;
+
+        EnableTrail(false);
     }
 
     public void StartFastFall()
@@ -50,6 +55,8 @@ public class FallHandler
             return;
 
         _isFallingActive = true;
+
+        EnableTrail(true);
 
         _rigidbody.gravityScale = _fallGravityScale;
         _rigidbody.AddForce(Vector2.down * _acceleratedFallForce, ForceMode2D.Impulse);
@@ -65,6 +72,7 @@ public class FallHandler
 
         ResetGravity();
         RestoreIgnoredPlatforms();
+        EnableTrail(false);
 
         if (_fallRoutine != null)
         {
@@ -84,6 +92,7 @@ public class FallHandler
         _isFallingActive = false;
         ResetGravity();
         RestoreIgnoredPlatforms();
+        EnableTrail(false);
         _fallRoutine = null;
     }
 
@@ -122,5 +131,13 @@ public class FallHandler
         RaycastHit2D hit = Physics2D.Raycast(_legsPoint.position, Vector2.down, GroundCheckDistance, _groundLayer);
         Debug.DrawRay(_legsPoint.position, Vector2.down * GroundCheckDistance, Color.red, 0.1f);
         return hit.collider != null;
+    }
+
+    private void EnableTrail(bool enabled)
+    {
+        if (_trailRenderer != null)
+        {
+            _trailRenderer.emitting = enabled;
+        }
     }
 }

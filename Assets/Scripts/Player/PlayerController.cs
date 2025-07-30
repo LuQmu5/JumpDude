@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private DashEffect _dashEffect;
     [SerializeField] private CharacterConfig _characterConfig;
     [SerializeField] private Collider2D _collider;
+    [SerializeField] private TrailRenderer _fallFastTrail;
 
     private PlayerInput _input;
     private GroundChecker _groundChecker;
@@ -27,7 +28,7 @@ public class PlayerController : MonoBehaviour
 
     public void Init()
     {
-        _fallHandler = new FallHandler(_characterConfig.FallConfig, _rigidbody, _collider, _legs, this);
+        _fallHandler = new FallHandler(_characterConfig.FallConfig, _rigidbody, _collider, _legs, this, _fallFastTrail);
         _groundChecker = new GroundChecker(_characterConfig.GroundCheckConfig, _legs);
         _gravityHandler = new GravityHandler(_rigidbody, _groundChecker);
         _movementHandler = new MovementHandler(_characterConfig.MovementConfig, _rigidbody, this);
