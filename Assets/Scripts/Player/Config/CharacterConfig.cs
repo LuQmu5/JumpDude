@@ -9,4 +9,5 @@ public class CharacterConfig : ScriptableObject
     [field: SerializeField] public JumpConfig JumpConfig { get; private set; }
     [field: SerializeField] public MovementConfig MovementConfig { get; private set; }
     [field: SerializeField] public FallConfig FallConfig { get; private set; }
+    [field: SerializeField] public HookConfig HookConfig { get; private set; }
 }

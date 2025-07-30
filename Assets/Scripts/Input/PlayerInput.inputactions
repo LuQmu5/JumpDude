@@ -110,7 +110,7 @@
                 {
                     "name": "",
                     "id": "b5e58c74-04d9-4943-87bd-c9631cb6b72c",
-                    "path": "<Keyboard>/leftCtrl",
+                    "path": "<Keyboard>/f",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -121,7 +121,7 @@
                 {
                     "name": "",
                     "id": "efdf6373-873b-4979-88c2-de39b9258852",
-                    "path": "<Keyboard>/leftAlt",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

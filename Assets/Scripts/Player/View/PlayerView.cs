@@ -35,8 +35,13 @@ public class PlayerView : MonoBehaviour
         _animator.SetTrigger("Dash");
     }
 
-    public void SetFallState(bool state)
+    public void SetFastFallState(bool state)
     {
-        _animator.SetBool("IsFalling", state);
+        _animator.SetBool("IsFastFalling", state);
+    }
+
+    public void SetHookState(bool state)
+    {
+        _animator.SetBool("IsHooking", state);
     }
 }

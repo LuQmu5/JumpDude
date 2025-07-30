@@ -201,6 +201,32 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1102 &-5920492387188322505
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Hook
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 7400000, guid: 1530b4126dd89354bbe78f615c5cab2c, type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1101 &-5049378538005695012
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -241,7 +267,7 @@ AnimatorStateTransition:
     m_ConditionEvent: IsGliding
     m_EventTreshold: 0
   - m_ConditionMode: 1
-    m_ConditionEvent: IsFalling
+    m_ConditionEvent: IsFastFalling
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 3055635905538634701}
@@ -272,7 +298,7 @@ AnimatorStateTransition:
     m_ConditionEvent: IsGliding
     m_EventTreshold: 0
   - m_ConditionMode: 2
-    m_ConditionEvent: IsFalling
+    m_ConditionEvent: IsFastFalling
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 3586425086592307611}
@@ -461,7 +487,7 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: IsFalling
+  - m_Name: IsFastFalling
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -475,6 +501,12 @@ AnimatorController:
     m_Controller: {fileID: 9100000}
   - m_Name: VelocityY
     m_Type: 3
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
+  - m_Name: IsHooking
+    m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
@@ -605,6 +637,9 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: 3055635905538634701}
     m_Position: {x: -20, y: 750, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: -5920492387188322505}
+    m_Position: {x: -570, y: 340, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: 2050828495993687681}
@@ -614,6 +649,7 @@ AnimatorStateMachine:
   - {fileID: -4448511808191319995}
   - {fileID: 3363669025083094593}
   - {fileID: 3397401033169537252}
+  - {fileID: 5858359960329582693}
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
@@ -637,10 +673,13 @@ AnimatorStateTransition:
     m_ConditionEvent: IsGliding
     m_EventTreshold: 0
   - m_ConditionMode: 2
-    m_ConditionEvent: IsFalling
+    m_ConditionEvent: IsFastFalling
     m_EventTreshold: 0
   - m_ConditionMode: 4
     m_ConditionEvent: VelocityY
+    m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: IsHooking
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 6438013638666661639}
@@ -671,7 +710,7 @@ AnimatorStateTransition:
     m_ConditionEvent: IsGliding
     m_EventTreshold: 0
   - m_ConditionMode: 2
-    m_ConditionEvent: IsFalling
+    m_ConditionEvent: IsFastFalling
     m_EventTreshold: 0
   - m_ConditionMode: 3
     m_ConditionEvent: VelocityX
@@ -771,6 +810,31 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1101 &5858359960329582693
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: IsHooking
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: -5920492387188322505}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0
+  m_TransitionOffset: 0
+  m_ExitTime: 0.75
+  m_HasExitTime: 0
+  m_HasFixedDuration: 0
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 0
 --- !u!1102 &6438013638666661639
 AnimatorState:
   serializedVersion: 6

@@ -6,11 +6,13 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private PlayerView _view;
     [SerializeField] private Rigidbody2D _rigidbody;
-    [SerializeField] private Transform _legs;
+    [SerializeField] private Transform _legsPoint;
+    [SerializeField] private Transform _hookPoint;
     [SerializeField] private DashEffect _dashEffect;
     [SerializeField] private CharacterConfig _characterConfig;
     [SerializeField] private Collider2D _collider;
     [SerializeField] private TrailRenderer _fallFastTrail;
+    [SerializeField] private LineRenderer _hookRenderer;
 
     private PlayerInput _input;
     private GroundChecker _groundChecker;
@@ -20,6 +22,7 @@ public class PlayerController : MonoBehaviour
     private GlideHandler _glideHandler;
     private DashHandler _dashHandler;
     private FallHandler _fallHandler;
+    private HookHandler _hookHandler;
 
     private Vector3 _rightRotation = Vector3.zero;
     private Vector3 _leftRotation = new Vector3(0, 180, 0);
@@ -28,13 +31,14 @@ public class PlayerController : MonoBehaviour
 
     public void Init()
     {
-        _fallHandler = new FallHandler(_characterConfig.FallConfig, _rigidbody, _collider, _legs, this, _fallFastTrail);
-        _groundChecker = new GroundChecker(_characterConfig.GroundCheckConfig, _legs);
+        _fallHandler = new FallHandler(_characterConfig.FallConfig, _rigidbody, _collider, _legsPoint, this, _fallFastTrail);
+        _groundChecker = new GroundChecker(_characterConfig.GroundCheckConfig, _legsPoint);
         _gravityHandler = new GravityHandler(_rigidbody, _groundChecker);
         _movementHandler = new MovementHandler(_characterConfig.MovementConfig, _rigidbody, this);
         _jumpHandler = new JumpHandler(_characterConfig.JumpConfig, _rigidbody, _groundChecker, this);
         _glideHandler = new GlideHandler(_characterConfig.GlideConfig, _rigidbody, this, _groundChecker);
         _dashHandler = new DashHandler(_characterConfig.DashConfig, _rigidbody, this, _dashEffect);
+        _hookHandler = new HookHandler(_characterConfig.HookConfig, _rigidbody, _hookPoint, this, _hookRenderer);
 
         _input = new PlayerInput();
         _input.Enable();
@@ -45,8 +49,11 @@ public class PlayerController : MonoBehaviour
         _input.Movement.Dash.started += OnDashStarted;
         _input.Movement.Dash.canceled += OnDashPerformed;
 
-        _input.Movement.Fall.started += OnFallStarted;
-        _input.Movement.Fall.canceled += OnFallPerformed;
+        _input.Movement.Fall.started += OnFastFallStarted;
+        _input.Movement.Fall.canceled += OnFastFallCanceled;
+
+        _input.Movement.Hook.started += OnHookStarted;
+        _input.Movement.Hook.canceled += OnHookCanceled;
 
         _isInited = true;
     }
@@ -72,7 +79,8 @@ public class PlayerController : MonoBehaviour
         _view.SetVelocityY((int)_rigidbody.linearVelocityY);
         _view.SetOnGroundState(_groundChecker.OnGround());
         _view.SetGlidingState(_glideHandler.IsGliding);
-        _view.SetFallState(_fallHandler.IsFalling);
+        _view.SetFastFallState(_fallHandler.IsFalling);
+        _view.SetHookState(_hookHandler.IsHooking);
     }
 
     private void HandleMovement()
@@ -85,6 +93,19 @@ public class PlayerController : MonoBehaviour
 
         _movementHandler.SetHorizontalVelocity(horizontalInput * glideMultiplier);
         RotateFromVelocity(horizontalInput);
+    }
+
+    private void OnHookCanceled(CallbackContext context)
+    {
+        _hookHandler.StopHook();
+    }
+
+    private void OnHookStarted(CallbackContext context)
+    {
+        Vector3 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+        if (_hookHandler.StartHook(direction))
+            RotateFromVelocity(direction.x - transform.position.x);
     }
 
     private void OnJumpStarted(CallbackContext context)
@@ -118,12 +139,12 @@ public class PlayerController : MonoBehaviour
             _view.SetDashTrigger();
     }
 
-    private void OnFallPerformed(CallbackContext context)
+    private void OnFastFallCanceled(CallbackContext context)
     {
         _fallHandler.StopFastFall();
     }
 
-    private void OnFallStarted(CallbackContext context)
+    private void OnFastFallStarted(CallbackContext context)
     {
         _fallHandler.StartFastFall();
     }
