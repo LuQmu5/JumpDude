@@ -185,7 +185,7 @@ GameObject:
   - component: {fileID: 1271520099909315924}
   - component: {fileID: 2167006501236146217}
   - component: {fileID: -4334403282872240814}
-  - component: {fileID: 2823882505292721892}
+  - component: {fileID: 6935214480676203871}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -253,7 +253,8 @@ MonoBehaviour:
   _legs: {fileID: 4683420268535200338}
   _dashEffect: {fileID: 1948612912343878147}
   _characterConfig: {fileID: 11400000, guid: 94e8b62a265b55742b18aa585924882f, type: 2}
---- !u!70 &2823882505292721892
+  _collider: {fileID: 6935214480676203871}
+--- !u!70 &6935214480676203871
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -288,7 +289,7 @@ CapsuleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 1.1, y: 2.2}
+  m_Size: {x: 0.8, y: 2.2}
   m_Direction: 0
 --- !u!1 &3583356909249538311
 GameObject:
@@ -750,7 +751,7 @@ Transform:
   m_GameObject: {fileID: 6770197621013892793}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalPosition: {x: 0.035, y: -1.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

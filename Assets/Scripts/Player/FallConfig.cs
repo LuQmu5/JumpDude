@@ -7,4 +7,5 @@ public class FallConfig : ScriptableObject
     [field: SerializeField] public float AcceleratedFallForce { get; private set; }
     [field: SerializeField] public float DisableCollisionDuration { get; private set; }
     [field: SerializeField] public LayerMask PlatformLayer { get; private set; }
+    [field: SerializeField] public LayerMask GroundLayer { get; private set; }
 }

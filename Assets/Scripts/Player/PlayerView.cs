@@ -5,14 +5,14 @@ public class PlayerView : MonoBehaviour
 {
     [SerializeField] private Animator _animator;
 
-    public void SetVelocityX(float value)
+    public void SetVelocityX(int value)
     {
-        _animator.SetFloat("VelocityX", value);
+        _animator.SetInteger("VelocityX", value);
     }
 
-    public void SetVelocityY(float value)
+    public void SetVelocityY(int value)
     {
-        _animator.SetFloat("VelocityY", value);
+        _animator.SetInteger("VelocityY", value);
     }
 
     public void SetOnGroundState(bool state)

@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform _legs;
     [SerializeField] private DashEffect _dashEffect;
     [SerializeField] private CharacterConfig _characterConfig;
+    [SerializeField] private Collider2D _collider;
 
     private PlayerInput _input;
     private GroundChecker _groundChecker;
@@ -22,15 +23,17 @@ public class PlayerController : MonoBehaviour
     private Vector3 _rightRotation = Vector3.zero;
     private Vector3 _leftRotation = new Vector3(0, 180, 0);
 
+    private bool _isInited = false;
+
     public void Init()
     {
+        _fallHandler = new FallHandler(_characterConfig.FallConfig, _rigidbody, _collider, _legs, this);
         _groundChecker = new GroundChecker(_characterConfig.GroundCheckConfig, _legs);
         _gravityHandler = new GravityHandler(_rigidbody, _groundChecker);
         _movementHandler = new MovementHandler(_characterConfig.MovementConfig, _rigidbody, this);
         _jumpHandler = new JumpHandler(_characterConfig.JumpConfig, _rigidbody, _groundChecker, this);
         _glideHandler = new GlideHandler(_characterConfig.GlideConfig, _rigidbody, this, _groundChecker);
         _dashHandler = new DashHandler(_characterConfig.DashConfig, _rigidbody, this, _dashEffect);
-        _fallHandler = new FallHandler(_characterConfig.FallConfig, _rigidbody, GetComponent<Collider2D>(), _legs, _groundChecker, this);
 
         _input = new PlayerInput();
         _input.Enable();
@@ -43,10 +46,15 @@ public class PlayerController : MonoBehaviour
 
         _input.Movement.Fall.started += OnFallStarted;
         _input.Movement.Fall.canceled += OnFallPerformed;
+
+        _isInited = true;
     }
 
     private void Update()
     {
+        if (_isInited == false)
+            return;
+
         _gravityHandler.HandleGravity(_fallHandler.IsFalling);
 
         _movementHandler.IsGliding = _glideHandler.IsGliding;
@@ -59,8 +67,8 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateView()
     {
-        _view.SetVelocityX(Mathf.Abs(_rigidbody.linearVelocityX));
-        _view.SetVelocityY(_rigidbody.linearVelocityY);
+        _view.SetVelocityX(Mathf.Abs((int)_rigidbody.linearVelocityX));
+        _view.SetVelocityY((int)_rigidbody.linearVelocityY);
         _view.SetOnGroundState(_groundChecker.OnGround());
         _view.SetGlidingState(_glideHandler.IsGliding);
         _view.SetFallState(_fallHandler.IsFalling);
@@ -111,12 +119,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnFallPerformed(CallbackContext context)
     {
-        _fallHandler.StartFall();
+        _fallHandler.StopFastFall();
     }
 
     private void OnFallStarted(CallbackContext context)
     {
-        _fallHandler.StopFall();
+        _fallHandler.StartFastFall();
     }
 
     private void RotateFromVelocity(float velocity)
