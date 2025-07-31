@@ -7,3 +7,4 @@ public class MovementConfig : ScriptableObject
     [field: SerializeField] public float SlowDownSpeed { get ; private set; }
     [field: SerializeField] public float FallSpeedXMultiplier { get ; private set; }
 }
+

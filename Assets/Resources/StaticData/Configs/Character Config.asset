@@ -19,3 +19,4 @@ MonoBehaviour:
   <MovementConfig>k__BackingField: {fileID: 11400000, guid: 1fac48f30f834df479acf45586d05946, type: 2}
   <FallConfig>k__BackingField: {fileID: 11400000, guid: 792cc4d1a0d03774eb3c94e228c20a90, type: 2}
   <HookConfig>k__BackingField: {fileID: 11400000, guid: 532e3d4ba5bac5d4c8d70622c2758514, type: 2}
+  <FallTimeSlowConfig>k__BackingField: {fileID: 11400000, guid: eed45ad86f3200a46a79f0be8a44bb2a, type: 2}

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FallHandler
+public class FastFallHandler
 {
     private readonly Rigidbody2D _rigidbody;
     private readonly Collider2D _playerCollider;
@@ -26,8 +26,8 @@ public class FallHandler
 
     public bool IsFalling => _isFallingActive;
 
-    public FallHandler(
-        FallConfig config,
+    public FastFallHandler(
+        FastFallConfig config,
         Rigidbody2D rigidbody,
         Collider2D playerCollider,
         Transform legsPoint,

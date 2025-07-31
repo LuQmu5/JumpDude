@@ -22,8 +22,9 @@ public class PlayerController : MonoBehaviour
     private JumpHandler _jumpHandler;
     private GlideHandler _glideHandler;
     private DashHandler _dashHandler;
-    private FallHandler _fallHandler;
+    private FastFallHandler _fallHandler;
     private HookHandler _hookHandler;
+    private FallTimeSlowHandler _fallTimeSlowHandler;
 
     private Vector3 _rightRotation = Vector3.zero;
     private Vector3 _leftRotation = new Vector3(0, 180, 0);
@@ -32,7 +33,7 @@ public class PlayerController : MonoBehaviour
 
     public void Init(PlayerInput input)
     {
-        _fallHandler = new FallHandler(_characterConfig.FallConfig, _rigidbody, _collider, _legsPoint, this, _fallFastTrail);
+        _fallHandler = new FastFallHandler(_characterConfig.FallConfig, _rigidbody, _collider, _legsPoint, this, _fallFastTrail);
         _groundChecker = new GroundChecker(_characterConfig.GroundCheckConfig, _legsPoint);
         _gravityHandler = new GravityHandler(_rigidbody, _groundChecker);
         _movementHandler = new MovementHandler(_characterConfig.MovementConfig, _rigidbody, this);
@@ -40,6 +41,7 @@ public class PlayerController : MonoBehaviour
         _glideHandler = new GlideHandler(_characterConfig.GlideConfig, _rigidbody, this, _groundChecker);
         _dashHandler = new DashHandler(_characterConfig.DashConfig, _rigidbody, this, _dashEffect);
         _hookHandler = new HookHandler(_characterConfig.HookConfig, _rigidbody, _hookPoint, _hookVisual, this, _hookRenderer, _collider);
+        _fallTimeSlowHandler = new FallTimeSlowHandler(_rigidbody, this, _characterConfig.FallTimeSlowConfig, _groundChecker);
 
         _input = input;
         _input.Enable();
@@ -63,6 +65,8 @@ public class PlayerController : MonoBehaviour
 
         _movementHandler.IsGliding = _glideHandler.IsGliding;
         _movementHandler.UpdateFallState();
+
+        _fallTimeSlowHandler.Update();
 
         HandleMovement();
         UpdateView();

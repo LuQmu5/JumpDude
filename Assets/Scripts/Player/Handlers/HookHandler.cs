@@ -19,7 +19,6 @@ public class HookHandler
 
     private Coroutine _hookRoutine;
     private bool _isHooking;
-    private bool _isReturning;
 
     public bool IsHooking => _isHooking;
 
@@ -87,7 +86,6 @@ public class HookHandler
     public void StopHook()
     {
         _isHooking = false;
-        _isReturning = false;
 
         if (_hookRoutine != null)
         {
@@ -149,7 +147,6 @@ public class HookHandler
 
     private IEnumerator ReturnHookRoutine(Vector2 start, Vector2 target)
     {
-        _isReturning = true;
         _hookVisual.gameObject.SetActive(true);
         _lineRenderer.enabled = true;
 
