@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a69ca95d30b6a634bb221de48c8cf796, type: 3}
   m_Name: Dash Config
   m_EditorClassIdentifier: 
-  <MinHoldTime>k__BackingField: 0.2
-  <MaxHoldTime>k__BackingField: 0.4
+  <MinHoldTime>k__BackingField: 0.1
+  <MaxHoldTime>k__BackingField: 0.3
   <Power>k__BackingField: 12
   <Cooldown>k__BackingField: 1
   <Duration>k__BackingField: 0.25

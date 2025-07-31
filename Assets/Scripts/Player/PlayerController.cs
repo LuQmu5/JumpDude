@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Rigidbody2D _rigidbody;
     [SerializeField] private Transform _legsPoint;
     [SerializeField] private Transform _hookPoint;
+    [SerializeField] private Transform _hookVisual;
     [SerializeField] private DashEffect _dashEffect;
     [SerializeField] private CharacterConfig _characterConfig;
     [SerializeField] private Collider2D _collider;
@@ -38,7 +39,7 @@ public class PlayerController : MonoBehaviour
         _jumpHandler = new JumpHandler(_characterConfig.JumpConfig, _rigidbody, _groundChecker, this);
         _glideHandler = new GlideHandler(_characterConfig.GlideConfig, _rigidbody, this, _groundChecker);
         _dashHandler = new DashHandler(_characterConfig.DashConfig, _rigidbody, this, _dashEffect);
-        _hookHandler = new HookHandler(_characterConfig.HookConfig, _rigidbody, _hookPoint, this, _hookRenderer, _collider);
+        _hookHandler = new HookHandler(_characterConfig.HookConfig, _rigidbody, _hookPoint, _hookVisual, this, _hookRenderer, _collider);
 
         _input = new PlayerInput();
         _input.Enable();

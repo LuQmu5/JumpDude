@@ -3,25 +3,26 @@ using UnityEngine;
 
 public class GlideHandler
 {
-    private Rigidbody2D _rigidbody;
-    private GroundChecker _groundChecker;
-    private MonoBehaviour _coroutineRunner;
+    private readonly Rigidbody2D _rigidbody;
+    private readonly GroundChecker _groundChecker;
+    private readonly MonoBehaviour _coroutineRunner;
 
-    private float _glideGravityScale;
-    private float _glideMovementSpeedMultiplier;
-    private float _changeGravityDuration;
-    private float _instantGravityScaleMultiplier;
-
-    private float _baseGravityScale;
+    private readonly float _glideGravityScale;
+    private readonly float _glideMovementSpeedMultiplier;
+    private readonly float _baseGravityScale;
 
     public float GlideMovementSpeedMultiplier => _glideMovementSpeedMultiplier;
 
-    public GlideHandler(GlideConfig config, Rigidbody2D rigidbody, MonoBehaviour coroutineRunner, GroundChecker groundChecker)
+    public bool IsGliding { get; private set; }
+
+    public GlideHandler(
+        GlideConfig config,
+        Rigidbody2D rigidbody,
+        MonoBehaviour coroutineRunner,
+        GroundChecker groundChecker)
     {
         _glideGravityScale = config.ModifiedGravityScale;
         _glideMovementSpeedMultiplier = config.MovementSpeedMultiplier;
-        _changeGravityDuration = config.ChangeGravityDuration;
-        _instantGravityScaleMultiplier = config.InstantGravityScaleMultiplier;
 
         _rigidbody = rigidbody;
         _baseGravityScale = _rigidbody.gravityScale;
@@ -29,43 +30,28 @@ public class GlideHandler
         _groundChecker = groundChecker;
     }
 
-    public bool IsGliding { get; private set; }
-
     public void StartGlide()
     {
+        if (IsGliding)
+            return;
+
         IsGliding = true;
-        _coroutineRunner.StartCoroutine(ChangeGravityScale(_rigidbody.gravityScale, _glideGravityScale, _changeGravityDuration));
+        _rigidbody.gravityScale = _glideGravityScale;
         _coroutineRunner.StartCoroutine(GlideProcessing());
     }
 
     public void StopGlide()
     {
+        if (!IsGliding)
+            return;
+
         IsGliding = false;
-        _coroutineRunner.StartCoroutine(ChangeGravityScale(_rigidbody.gravityScale, _baseGravityScale, _changeGravityDuration));
+        _rigidbody.gravityScale = _baseGravityScale;
     }
-
-    private IEnumerator ChangeGravityScale(float from, float to, float duration)
-    {
-        float mid = Mathf.Lerp(from, to, _instantGravityScaleMultiplier);
-        _rigidbody.gravityScale = mid;
-
-        float elapsed = 0f;
-
-        while (elapsed < duration)
-        {
-            _rigidbody.gravityScale = Mathf.Lerp(mid, to, elapsed / duration);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        _rigidbody.gravityScale = to;
-    }
-
 
     private IEnumerator GlideProcessing()
     {
-        yield return new WaitUntil(() => IsGliding == false || _groundChecker.OnGround());
-
+        yield return new WaitUntil(() => !IsGliding || _groundChecker.OnGround());
         StopGlide();
     }
 }

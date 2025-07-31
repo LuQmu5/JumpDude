@@ -5,6 +5,4 @@ public class GlideConfig : ScriptableObject
 {
     [field: SerializeField] public float ModifiedGravityScale { get; private set; }
     [field: SerializeField] public float MovementSpeedMultiplier { get; private set; }
-    [field: SerializeField] public float ChangeGravityDuration { get; private set; }
-    [field: SerializeField] public float InstantGravityScaleMultiplier { get; private set; } = 0.3f;
 }
