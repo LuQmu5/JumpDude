@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
 
     private bool _inAction = false;
 
-    public void Init()
+    public void Init(PlayerInput input)
     {
         _fallHandler = new FallHandler(_characterConfig.FallConfig, _rigidbody, _collider, _legsPoint, this, _fallFastTrail);
         _groundChecker = new GroundChecker(_characterConfig.GroundCheckConfig, _legsPoint);
@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
         _dashHandler = new DashHandler(_characterConfig.DashConfig, _rigidbody, this, _dashEffect);
         _hookHandler = new HookHandler(_characterConfig.HookConfig, _rigidbody, _hookPoint, _hookVisual, this, _hookRenderer, _collider);
 
-        _input = new PlayerInput();
+        _input = input;
         _input.Enable();
 
         _input.Movement.Jump.started += OnJumpStarted;
@@ -50,8 +50,8 @@ public class PlayerController : MonoBehaviour
         _input.Movement.Dash.started += OnDashStarted;
         _input.Movement.Dash.canceled += OnDashPerformed;
 
-        _input.Movement.Fall.started += OnFastFallStarted;
-        _input.Movement.Fall.canceled += OnFastFallCanceled;
+        _input.Movement.FastFall.started += OnFastFallStarted;
+        _input.Movement.FastFall.canceled += OnFastFallCanceled;
 
         _input.Movement.Hook.started += OnHookStarted;
         _input.Movement.Hook.canceled += OnHookCanceled;

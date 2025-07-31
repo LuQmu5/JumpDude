@@ -33,7 +33,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Fall",
+                    "name": "FastFall",
                     "type": "Button",
                     "id": "e522b542-484c-4d24-9d18-7d0ff0e0d8de",
                     "expectedControlType": "",
@@ -114,7 +114,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Fall",
+                    "action": "FastFall",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

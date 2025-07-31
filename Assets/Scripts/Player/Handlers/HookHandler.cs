@@ -19,6 +19,7 @@ public class HookHandler
 
     private Coroutine _hookRoutine;
     private bool _isHooking;
+    private bool _isReturning;
 
     public bool IsHooking => _isHooking;
 
@@ -57,23 +58,36 @@ public class HookHandler
         Vector2 start = _hookStartPoint.position;
         Vector2 dir = (cursorWorldPosition - start).normalized;
 
-        float totalDistance = Vector2.Distance(start, cursorWorldPosition);
-        float heightDifference = Mathf.Abs(cursorWorldPosition.y - start.y);
-
-        if (totalDistance < _minTotalDistance || heightDifference < _minDistanceY)
+        float rawDistance = Vector2.Distance(start, cursorWorldPosition);
+        float rawHeight = Mathf.Abs(cursorWorldPosition.y - start.y);
+        if (rawDistance < _minTotalDistance || rawHeight < _minDistanceY)
             return false;
 
         RaycastHit2D hit = Physics2D.Raycast(start, dir, _maxDistance, _hookableLayer);
-        if (hit.collider == null)
-            return false;
 
-        _hookRoutine = _coroutineRunner.StartCoroutine(HookRoutine(hit.point));
+        if (hit.collider != null)
+        {
+            Vector2 hookPoint = hit.point;
+            float totalDistance = Vector2.Distance(start, hookPoint);
+            float heightDifference = Mathf.Abs(hookPoint.y - start.y);
+
+            if (totalDistance < _minTotalDistance || heightDifference < _minDistanceY)
+                return false;
+
+            _hookRoutine = _coroutineRunner.StartCoroutine(HookRoutine(hookPoint));
+        }
+        else
+        {
+            _hookRoutine = _coroutineRunner.StartCoroutine(ReturnHookRoutine(start, cursorWorldPosition));
+        }
+
         return true;
     }
 
     public void StopHook()
     {
         _isHooking = false;
+        _isReturning = false;
 
         if (_hookRoutine != null)
         {
@@ -87,10 +101,9 @@ public class HookHandler
 
     private IEnumerator HookRoutine(Vector2 hookPoint)
     {
-        _lineRenderer.enabled = true;
-        _hookVisual.gameObject.SetActive(true);
-
         _isHooking = true;
+        _hookVisual.gameObject.SetActive(true);
+        _lineRenderer.enabled = true;
 
         Vector2 start = _hookStartPoint.position;
         Vector2 current = start;
@@ -100,9 +113,9 @@ public class HookHandler
             current = Vector2.MoveTowards(current, hookPoint, _hookSpeed * Time.deltaTime);
             _hookVisual.position = current;
 
-            Vector2 direction = _hookVisual.transform.position - _hookStartPoint.position;
+            Vector2 direction = current - start;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            _hookVisual.transform.rotation = Quaternion.Euler(0f, 0f, angle);
+            _hookVisual.rotation = Quaternion.Euler(0f, 0f, angle);
 
             _lineRenderer.SetPosition(0, _hookStartPoint.position);
             _lineRenderer.SetPosition(1, current);
@@ -133,4 +146,42 @@ public class HookHandler
 
         StopHook();
     }
+
+    private IEnumerator ReturnHookRoutine(Vector2 start, Vector2 target)
+    {
+        _isReturning = true;
+        _hookVisual.gameObject.SetActive(true);
+        _lineRenderer.enabled = true;
+
+        Vector2 current = start;
+
+        while (Vector2.Distance(current, target) > 0.1f)
+        {
+            current = Vector2.MoveTowards(current, target, _hookSpeed * Time.deltaTime);
+            _hookVisual.position = current;
+
+            Vector2 direction = current - start;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            _hookVisual.rotation = Quaternion.Euler(0f, 0f, angle);
+
+            _lineRenderer.SetPosition(0, _hookStartPoint.position);
+            _lineRenderer.SetPosition(1, current);
+
+            yield return null;
+        }
+
+        while (Vector2.Distance(current, start) > 0.1f)
+        {
+            current = Vector2.MoveTowards(current, start, _hookSpeed * Time.deltaTime);
+            _hookVisual.position = current;
+
+            _lineRenderer.SetPosition(0, _hookStartPoint.position);
+            _lineRenderer.SetPosition(1, current);
+
+            yield return null;
+        }
+
+        StopHook();
+    }
+
 }

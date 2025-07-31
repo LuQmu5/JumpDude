@@ -55,7 +55,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Fall"",
+                    ""name"": ""FastFall"",
                     ""type"": ""Button"",
                     ""id"": ""e522b542-484c-4d24-9d18-7d0ff0e0d8de"",
                     ""expectedControlType"": """",
@@ -136,7 +136,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Fall"",
+                    ""action"": ""FastFall"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -161,7 +161,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_Movement_Move = m_Movement.FindAction("Move", throwIfNotFound: true);
         m_Movement_Jump = m_Movement.FindAction("Jump", throwIfNotFound: true);
         m_Movement_Dash = m_Movement.FindAction("Dash", throwIfNotFound: true);
-        m_Movement_Fall = m_Movement.FindAction("Fall", throwIfNotFound: true);
+        m_Movement_FastFall = m_Movement.FindAction("FastFall", throwIfNotFound: true);
         m_Movement_Hook = m_Movement.FindAction("Hook", throwIfNotFound: true);
     }
 
@@ -232,7 +232,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Movement_Move;
     private readonly InputAction m_Movement_Jump;
     private readonly InputAction m_Movement_Dash;
-    private readonly InputAction m_Movement_Fall;
+    private readonly InputAction m_Movement_FastFall;
     private readonly InputAction m_Movement_Hook;
     public struct MovementActions
     {
@@ -241,7 +241,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Movement_Move;
         public InputAction @Jump => m_Wrapper.m_Movement_Jump;
         public InputAction @Dash => m_Wrapper.m_Movement_Dash;
-        public InputAction @Fall => m_Wrapper.m_Movement_Fall;
+        public InputAction @FastFall => m_Wrapper.m_Movement_FastFall;
         public InputAction @Hook => m_Wrapper.m_Movement_Hook;
         public InputActionMap Get() { return m_Wrapper.m_Movement; }
         public void Enable() { Get().Enable(); }
@@ -261,9 +261,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Dash.started += instance.OnDash;
             @Dash.performed += instance.OnDash;
             @Dash.canceled += instance.OnDash;
-            @Fall.started += instance.OnFall;
-            @Fall.performed += instance.OnFall;
-            @Fall.canceled += instance.OnFall;
+            @FastFall.started += instance.OnFastFall;
+            @FastFall.performed += instance.OnFastFall;
+            @FastFall.canceled += instance.OnFastFall;
             @Hook.started += instance.OnHook;
             @Hook.performed += instance.OnHook;
             @Hook.canceled += instance.OnHook;
@@ -280,9 +280,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Dash.started -= instance.OnDash;
             @Dash.performed -= instance.OnDash;
             @Dash.canceled -= instance.OnDash;
-            @Fall.started -= instance.OnFall;
-            @Fall.performed -= instance.OnFall;
-            @Fall.canceled -= instance.OnFall;
+            @FastFall.started -= instance.OnFastFall;
+            @FastFall.performed -= instance.OnFastFall;
+            @FastFall.canceled -= instance.OnFastFall;
             @Hook.started -= instance.OnHook;
             @Hook.performed -= instance.OnHook;
             @Hook.canceled -= instance.OnHook;
@@ -308,7 +308,7 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
-        void OnFall(InputAction.CallbackContext context);
+        void OnFastFall(InputAction.CallbackContext context);
         void OnHook(InputAction.CallbackContext context);
     }
 }

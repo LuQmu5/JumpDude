@@ -30,7 +30,7 @@ public class MainCameraController : MonoBehaviour
 
     private void CalculateCellSize()
     {
-        float height = _camera.orthographicSize * 1.8f;
+        float height = _camera.orthographicSize * 1.5f;
         float width = height * _camera.aspect;
         _cellSize = new Vector2(width, height);
     }
