@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa982fe3eba2eb34c80c21a4a9af42e5, type: 3}
+  m_Script: {fileID: 11500000, guid: 350b16396d972e94587815d572c02631, type: 3}
   m_Name: Fall Config
   m_EditorClassIdentifier: 
   <GravityMultiplier>k__BackingField: 3
