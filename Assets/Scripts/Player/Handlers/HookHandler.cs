@@ -73,7 +73,7 @@ public class HookHandler
             if (totalDistance < _minTotalDistance || heightDifference < _minDistanceY)
                 return false;
 
-            _hookRoutine = _coroutineRunner.StartCoroutine(HookRoutine(hookPoint));
+            _hookRoutine = _coroutineRunner.StartCoroutine(HookRoutine(hit));
         }
         else
         {
@@ -97,7 +97,7 @@ public class HookHandler
         _hookVisual.gameObject.SetActive(false);
     }
 
-    private IEnumerator HookRoutine(Vector2 hookPoint)
+    private IEnumerator HookRoutine(RaycastHit2D hookPoint)
     {
         _isHooking = true;
         _hookVisual.gameObject.SetActive(true);
@@ -106,9 +106,12 @@ public class HookHandler
         Vector2 start = _hookStartPoint.position;
         Vector2 current = start;
 
-        while (Vector2.Distance(current, hookPoint) > 0.1f)
+        if (hookPoint.collider.TryGetComponent(out MovableEnemy enemy))
+            enemy.Stop();
+
+        while (Vector2.Distance(current, hookPoint.point) > 0.1f)
         {
-            current = Vector2.MoveTowards(current, hookPoint, _hookSpeed * Time.deltaTime);
+            current = Vector2.MoveTowards(current, hookPoint.point, _hookSpeed * Time.deltaTime);
             _hookVisual.position = current;
 
             Vector2 direction = current - start;
@@ -124,17 +127,20 @@ public class HookHandler
         while (_isHooking)
         {
             Vector2 playerPos = _rigidbody.position;
-            Vector2 toHook = (hookPoint - playerPos).normalized;
+            Vector2 toHook = (hookPoint.point - playerPos).normalized;
 
             _rigidbody.linearVelocity = Vector2.zero;
             _rigidbody.AddForce(toHook * _pullForce, ForceMode2D.Force);
 
             _lineRenderer.SetPosition(0, _hookStartPoint.position);
-            _lineRenderer.SetPosition(1, hookPoint);
-            _hookVisual.position = hookPoint;
+            _lineRenderer.SetPosition(1, hookPoint.point);
+            _hookVisual.position = hookPoint.point;
 
-            if (Vector2.Distance(playerPos, hookPoint) < _collider.bounds.size.x * 2f)
+            if (Vector2.Distance(playerPos, hookPoint.point) < _collider.bounds.size.x * 2f)
             {
+                if (enemy != null)
+                    enemy.Deactivate();
+
                 _rigidbody.AddForce(Vector2.up * _pullForce * _pullFinalForce, ForceMode2D.Impulse);
                 break;
             }

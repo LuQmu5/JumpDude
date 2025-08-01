@@ -9,12 +9,14 @@ public class GameLoopManager
     private Transform _playerSpawnPoint;
     private MonoBehaviour _coroutineRunner;
     private PlayerInput _input;
+    private MovableEnemy[] _enemies;
 
     private Coroutine _waitingForRestartRoutine;
 
     public GameLoopManager(HintDisplay hintDisplay,
         PlayerController player, MainCameraController mainCameraController, 
-        Transform playerSpawnPoint, MonoBehaviour coroutineRunner, PlayerInput input)
+        Transform playerSpawnPoint, MonoBehaviour coroutineRunner, PlayerInput input,
+        MovableEnemy[] enemies)
     {
         _hintDisplay = hintDisplay;
         _player = player;
@@ -22,6 +24,7 @@ public class GameLoopManager
         _playerSpawnPoint = playerSpawnPoint;
         _coroutineRunner = coroutineRunner;
         _input = input;
+        _enemies = enemies;
     }
 
     public void HandleLose()
@@ -41,6 +44,11 @@ public class GameLoopManager
         _player.Activate();
         _player.transform.position = _playerSpawnPoint.position;
         _mainCameraController.Activate();
+
+        foreach (var enemy in _enemies)
+        {
+            enemy.Activate();
+        }
     }
 
     private IEnumerator WaitingForRestart()

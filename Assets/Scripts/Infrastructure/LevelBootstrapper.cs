@@ -16,7 +16,7 @@ public class LevelBootstrapper : MonoBehaviour
         playerInstance.Init(playerInput);
 
         TutorialManager tutorialManager = new TutorialManager(_hintDisplay, playerInput);
-        GameLoopManager gameLoopManager = new GameLoopManager(_hintDisplay, playerInstance, _camera, _playerSpawnPoint, this, playerInput);
+        GameLoopManager gameLoopManager = new GameLoopManager(_hintDisplay, playerInstance, _camera, _playerSpawnPoint, this, playerInput, _enemies);
 
         _camera.Init(playerInstance.transform);
         _deadZoneTrigger.Init(gameLoopManager);

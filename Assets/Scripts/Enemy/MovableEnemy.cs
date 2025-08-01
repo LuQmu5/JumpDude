@@ -1,5 +1,6 @@
 using UnityEngine;
 using DG.Tweening;
+using System;
 
 public class MovableEnemy : MonoBehaviour
 {
@@ -22,6 +23,11 @@ public class MovableEnemy : MonoBehaviour
     {
         _startPosition = transform.position;
 
+        StartMove();
+    }
+
+    private void StartMove()
+    {
         Vector3 targetOffset = (Vector3)moveDirection.normalized * moveDistance;
         Vector3 targetPosition = _startPosition + targetOffset;
 
@@ -41,5 +47,23 @@ public class MovableEnemy : MonoBehaviour
         {
             _gameLoopManager.HandleLose();
         }
+    }
+
+    public void Deactivate()
+    {
+        gameObject.SetActive(false);
+    }
+
+    public void Activate()
+    {
+        StartMove();
+        gameObject.SetActive(true);
+        GetComponent<Collider2D>().enabled = true;
+    }
+
+    public void Stop()
+    {
+        _moveTween?.Kill();
+        GetComponent<Collider2D>().enabled = false;
     }
 }
