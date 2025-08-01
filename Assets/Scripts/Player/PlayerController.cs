@@ -66,7 +66,8 @@ public class PlayerController : MonoBehaviour
         _movementHandler.IsGliding = _glideHandler.IsGliding;
         _movementHandler.UpdateFallState();
 
-        _fallTimeSlowHandler.Update();
+        if (_glideHandler.IsGliding == false)
+            _fallTimeSlowHandler.Update();
 
         HandleMovement();
         UpdateView();
@@ -173,5 +174,17 @@ public class PlayerController : MonoBehaviour
             transform.eulerAngles = _rightRotation;
         if (velocity < 0)
             transform.eulerAngles = _leftRotation;
+    }
+
+    public void Deactivate()
+    {
+        _inAction = false;
+        _rigidbody.linearVelocity = Vector2.zero;
+        gameObject.SetActive(false);
+    }
+
+    public void Activate()
+    {
+        gameObject.SetActive(true);
     }
 }

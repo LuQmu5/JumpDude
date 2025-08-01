@@ -6,6 +6,7 @@ public class LevelBootstrapper : MonoBehaviour
     [SerializeField] private Transform _playerSpawnPoint;
     [SerializeField] private MainCameraController _camera;
     [SerializeField] private HintDisplay _hintDisplay;
+    [SerializeField] private DeadZoneTrigger _deadZoneTrigger;
 
     private void Awake()
     {
@@ -13,8 +14,10 @@ public class LevelBootstrapper : MonoBehaviour
         PlayerController playerInstance = Instantiate(_playerPrefab, _playerSpawnPoint.position, Quaternion.identity);
         playerInstance.Init(playerInput);
 
-        _camera.Init(playerInstance.transform);
-
         TutorialManager tutorialManager = new TutorialManager(_hintDisplay, playerInput);
+        GameLoopManager gameLoopManager = new GameLoopManager(_hintDisplay, playerInstance, _camera, _playerSpawnPoint, this, playerInput);
+
+        _camera.Init(playerInstance.transform);
+        _deadZoneTrigger.Init(gameLoopManager);
     }
 }

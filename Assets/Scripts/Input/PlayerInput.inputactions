@@ -130,6 +130,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "GameLoop",
+            "id": "4e62c672-2414-4bcc-b44e-0e723b7dd5f3",
+            "actions": [
+                {
+                    "name": "Restart",
+                    "type": "Button",
+                    "id": "5e193bcc-e2c5-4f55-9017-f91d5e8408f7",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "d314e13c-eaf8-4295-81ff-a017e2e5274c",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Restart",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []

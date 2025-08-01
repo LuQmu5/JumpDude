@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
@@ -8,15 +9,12 @@ public class MainCameraController : MonoBehaviour
     private Vector2 _cellSize;
     private Vector2Int _currentCell;
 
+    private bool _isActive = false;
+
     public void Init(Transform target)
     {
         _target = target;
-
-        if (_target == null)
-        {
-            enabled = false;
-            return;
-        }
+        _isActive = true;
 
         _camera = GetComponent<Camera>();
         CalculateCellSize();
@@ -25,6 +23,9 @@ public class MainCameraController : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (_isActive == false)
+            return;
+
         UpdateCameraPosition();
     }
 
@@ -59,5 +60,15 @@ public class MainCameraController : MonoBehaviour
 
             transform.position = new Vector3(cellCenter.x, cellCenter.y, transform.position.z);
         }
+    }
+
+    public void Deactivate()
+    {
+        _isActive = false;
+    }
+
+    public void Activate()
+    {
+        _isActive = true;
     }
 }

@@ -152,6 +152,34 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""GameLoop"",
+            ""id"": ""4e62c672-2414-4bcc-b44e-0e723b7dd5f3"",
+            ""actions"": [
+                {
+                    ""name"": ""Restart"",
+                    ""type"": ""Button"",
+                    ""id"": ""5e193bcc-e2c5-4f55-9017-f91d5e8408f7"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""d314e13c-eaf8-4295-81ff-a017e2e5274c"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Restart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -163,11 +191,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_Movement_Dash = m_Movement.FindAction("Dash", throwIfNotFound: true);
         m_Movement_FastFall = m_Movement.FindAction("FastFall", throwIfNotFound: true);
         m_Movement_Hook = m_Movement.FindAction("Hook", throwIfNotFound: true);
+        // GameLoop
+        m_GameLoop = asset.FindActionMap("GameLoop", throwIfNotFound: true);
+        m_GameLoop_Restart = m_GameLoop.FindAction("Restart", throwIfNotFound: true);
     }
 
     ~@PlayerInput()
     {
         UnityEngine.Debug.Assert(!m_Movement.enabled, "This will cause a leak and performance issues, PlayerInput.Movement.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_GameLoop.enabled, "This will cause a leak and performance issues, PlayerInput.GameLoop.Disable() has not been called.");
     }
 
     public void Dispose()
@@ -303,6 +335,52 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         }
     }
     public MovementActions @Movement => new MovementActions(this);
+
+    // GameLoop
+    private readonly InputActionMap m_GameLoop;
+    private List<IGameLoopActions> m_GameLoopActionsCallbackInterfaces = new List<IGameLoopActions>();
+    private readonly InputAction m_GameLoop_Restart;
+    public struct GameLoopActions
+    {
+        private @PlayerInput m_Wrapper;
+        public GameLoopActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Restart => m_Wrapper.m_GameLoop_Restart;
+        public InputActionMap Get() { return m_Wrapper.m_GameLoop; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(GameLoopActions set) { return set.Get(); }
+        public void AddCallbacks(IGameLoopActions instance)
+        {
+            if (instance == null || m_Wrapper.m_GameLoopActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_GameLoopActionsCallbackInterfaces.Add(instance);
+            @Restart.started += instance.OnRestart;
+            @Restart.performed += instance.OnRestart;
+            @Restart.canceled += instance.OnRestart;
+        }
+
+        private void UnregisterCallbacks(IGameLoopActions instance)
+        {
+            @Restart.started -= instance.OnRestart;
+            @Restart.performed -= instance.OnRestart;
+            @Restart.canceled -= instance.OnRestart;
+        }
+
+        public void RemoveCallbacks(IGameLoopActions instance)
+        {
+            if (m_Wrapper.m_GameLoopActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IGameLoopActions instance)
+        {
+            foreach (var item in m_Wrapper.m_GameLoopActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_GameLoopActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public GameLoopActions @GameLoop => new GameLoopActions(this);
     public interface IMovementActions
     {
         void OnMove(InputAction.CallbackContext context);
@@ -310,5 +388,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         void OnDash(InputAction.CallbackContext context);
         void OnFastFall(InputAction.CallbackContext context);
         void OnHook(InputAction.CallbackContext context);
+    }
+    public interface IGameLoopActions
+    {
+        void OnRestart(InputAction.CallbackContext context);
     }
 }
