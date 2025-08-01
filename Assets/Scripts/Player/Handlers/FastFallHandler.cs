@@ -51,6 +51,14 @@ public class FastFallHandler
 
     public void StartFastFall()
     {
+        /*
+        if (_rigidbody.linearVelocityY > -2 && _rigidbody.linearVelocityY < 2)
+        {
+            _rigidbody.AddForce(Vector2.up * _acceleratedFallForce, ForceMode2D.Impulse);
+            return;
+        }
+        */
+
         if (_isFallingActive)
             return;
 

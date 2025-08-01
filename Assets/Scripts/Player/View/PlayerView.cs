@@ -44,4 +44,9 @@ public class PlayerView : MonoBehaviour
     {
         _animator.SetBool("IsHooking", state);
     }
+
+    public void SetHangingState(bool state)
+    {
+        _animator.SetBool("IsHanging", state);
+    }
 }

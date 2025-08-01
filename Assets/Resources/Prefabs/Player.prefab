@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &10337076497757198
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8058049029374421306}
+  m_Layer: 0
+  m_Name: LedgePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8058049029374421306
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 10337076497757198}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.45, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1817839575266662751}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1166639385804242965
 GameObject:
   m_ObjectHideFlags: 0
@@ -632,6 +663,7 @@ MonoBehaviour:
   _collider: {fileID: 6935214480676203871}
   _fallFastTrail: {fileID: 2078836707820142174}
   _hookRenderer: {fileID: 3828607708104809176}
+  _ledgePoint: {fileID: 8058049029374421306}
 --- !u!70 &6935214480676203871
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -1261,6 +1293,7 @@ Transform:
   - {fileID: 8267573259812095384}
   - {fileID: 5799053666042770950}
   - {fileID: 6732420316975174625}
+  - {fileID: 8058049029374421306}
   m_Father: {fileID: 1271520099909315924}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8935473468027105245
