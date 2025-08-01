@@ -7,6 +7,7 @@ public class LevelBootstrapper : MonoBehaviour
     [SerializeField] private MainCameraController _camera;
     [SerializeField] private HintDisplay _hintDisplay;
     [SerializeField] private DeadZoneTrigger _deadZoneTrigger;
+    [SerializeField] private MovableEnemy[] _enemies;
 
     private void Awake()
     {
@@ -19,5 +20,10 @@ public class LevelBootstrapper : MonoBehaviour
 
         _camera.Init(playerInstance.transform);
         _deadZoneTrigger.Init(gameLoopManager);
+
+        foreach (var enemy in _enemies)
+        {
+            enemy.Init(gameLoopManager);
+        }
     }
 }
