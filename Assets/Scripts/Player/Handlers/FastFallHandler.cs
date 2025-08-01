@@ -11,7 +11,7 @@ public class FastFallHandler
     private readonly LayerMask _platformLayer;
     private readonly LayerMask _groundLayer;
     private readonly TrailRenderer _trailRenderer;
-
+    private readonly KillAreaTrigger _killAreaTrigger;
     private readonly float _fallGravityScale;
     private readonly float _acceleratedFallForce;
     private readonly float _baseGravityScale;
@@ -32,7 +32,8 @@ public class FastFallHandler
         Collider2D playerCollider,
         Transform legsPoint,
         MonoBehaviour coroutineRunner,
-        TrailRenderer trailRenderer)
+        TrailRenderer trailRenderer,
+        KillAreaTrigger killAreaTrigger)
     {
         _fallGravityScale = config.GravityMultiplier;
         _acceleratedFallForce = config.AcceleratedFallForce;
@@ -45,7 +46,7 @@ public class FastFallHandler
         _legsPoint = legsPoint;
         _coroutineRunner = coroutineRunner;
         _trailRenderer = trailRenderer;
-
+        _killAreaTrigger = killAreaTrigger;
         EnableTrail(false);
     }
 
@@ -91,6 +92,8 @@ public class FastFallHandler
 
     private IEnumerator FallRoutine()
     {
+        _killAreaTrigger.Activate();
+
         while (_isFallingActive && !IsTouchingGround())
         {
             IgnoreNearbyPlatforms();
@@ -101,6 +104,7 @@ public class FastFallHandler
         ResetGravity();
         RestoreIgnoredPlatforms();
         EnableTrail(false);
+        _killAreaTrigger.Deactivate();
         _fallRoutine = null;
     }
 

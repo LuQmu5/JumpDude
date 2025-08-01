@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Collider2D _collider;
     [SerializeField] private TrailRenderer _fallFastTrail;
     [SerializeField] private LineRenderer _hookRenderer;
+    [SerializeField] private KillAreaTrigger _killAreaTriggerDash;
+    [SerializeField] private KillAreaTrigger _killAreaTriggerFastFall;
 
     private PlayerInput _input;
     private GroundChecker _groundChecker;
@@ -33,13 +35,13 @@ public class PlayerController : MonoBehaviour
 
     public void Init(PlayerInput input)
     {
-        _fallHandler = new FastFallHandler(_characterConfig.FallConfig, _rigidbody, _collider, _legsPoint, this, _fallFastTrail);
+        _fallHandler = new FastFallHandler(_characterConfig.FallConfig, _rigidbody, _collider, _legsPoint, this, _fallFastTrail, _killAreaTriggerFastFall);
         _groundChecker = new GroundChecker(_characterConfig.GroundCheckConfig, _legsPoint);
         _gravityHandler = new GravityHandler(_rigidbody, _groundChecker);
         _movementHandler = new MovementHandler(_characterConfig.MovementConfig, _rigidbody, this);
         _jumpHandler = new JumpHandler(_characterConfig.JumpConfig, _rigidbody, _groundChecker, this);
         _glideHandler = new GlideHandler(_characterConfig.GlideConfig, _rigidbody, this, _groundChecker);
-        _dashHandler = new DashHandler(_characterConfig.DashConfig, _rigidbody, this, _dashEffect);
+        _dashHandler = new DashHandler(_characterConfig.DashConfig, _rigidbody, this, _dashEffect, _killAreaTriggerDash);
         _hookHandler = new HookHandler(_characterConfig.HookConfig, _rigidbody, _hookPoint, _hookVisual, this, _hookRenderer, _collider);
         _fallTimeSlowHandler = new FallTimeSlowHandler(_rigidbody, this, _characterConfig.FallTimeSlowConfig, _groundChecker);
 
@@ -180,6 +182,7 @@ public class PlayerController : MonoBehaviour
     {
         _inAction = false;
         _rigidbody.linearVelocity = Vector2.zero;
+        _killAreaTriggerDash.Deactivate();
         gameObject.SetActive(false);
     }
 

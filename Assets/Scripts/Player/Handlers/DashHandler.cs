@@ -7,7 +7,7 @@ public class DashHandler
     private readonly Rigidbody2D _rigidbody;
     private readonly MonoBehaviour _coroutineRunner;
     private readonly DashEffect _dashEffect;
-
+    private readonly KillAreaTrigger _killAreaTrigger;
     private readonly float _minHoldTime;
     private readonly float _maxHoldTime;
     private readonly float _dashPower;
@@ -20,7 +20,7 @@ public class DashHandler
     public bool IsDashing { get; private set; } = false;
 
     public DashHandler(DashConfig config, Rigidbody2D rigidbody,
-                       MonoBehaviour coroutineRunner, DashEffect dashEffect)
+                       MonoBehaviour coroutineRunner, DashEffect dashEffect, KillAreaTrigger killAreaTrigger)
     {
         _dashPower = config.Power;
         _cooldown = config.Cooldown;
@@ -31,6 +31,7 @@ public class DashHandler
         _rigidbody = rigidbody;
         _coroutineRunner = coroutineRunner;
         _dashEffect = dashEffect;
+        _killAreaTrigger = killAreaTrigger;
     }
 
     public void StartDash()
@@ -61,6 +62,7 @@ public class DashHandler
     private IEnumerator Dashing(Vector2 direction, float force)
     {
         IsDashing = true;
+        _killAreaTrigger.Activate();
         _canDash = false;
 
         float originalGravity = _rigidbody.gravityScale;
@@ -82,6 +84,7 @@ public class DashHandler
         _rigidbody.linearVelocity = new Vector2(0, _rigidbody.linearVelocityY);
         _rigidbody.gravityScale = originalGravity;
         IsDashing = false;
+        _killAreaTrigger.Deactivate();
 
         yield return new WaitForSeconds(_cooldown);
         _canDash = true;
